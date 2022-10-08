@@ -1,0 +1,167 @@
+{
+    "ref": "toc",
+    "name": "Transfer of Care",
+    "confidentialitycode": "N",
+    "completebytime": "day(5)",
+    "completionBehavior": [{
+        "completion": {
+            "condition": "task(6)"
+        }
+    }],
+    "tasks": [{
+            "id": "1",
+            "tasktype": "TASK",
+            "name": "TOC_Workflow_Opened",
+            "description": "New Transfer of Care Workflow",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Workflow_Open)"
+                }
+            }],
+            "input": [{
+                "name": "LAC1^^TypeCode_EPUT_2018",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }],
+            "output": [{
+                "name": "TOC_Workflow_Open",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        },
+        {
+            "id": "2",
+            "tasktype": "TASK",
+            "name": "TOC_Request",
+            "description": "Issue Transfer Of Care Request to Provider",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "day(1)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Request)"
+                }
+            }],
+            "input": [{
+                "name": "TOC_Workflow_Open",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }],
+            "output": [{
+                "name": "TOC_Request",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        },
+        {
+            "id": "3",
+            "tasktype": "TASK",
+            "name": "TOC_Request_Accept_Reject",
+            "description": "Provider Accepts or Rejects Transfer Of Care Request",
+            "owner": "Provider_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "days(2)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Request_Accept)"
+                }
+            }],
+            "input": [{
+                "name": "TOC_Request",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }],
+            "output": [{
+                "name": "TOC_Request_Reject",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }, {
+                "name": "TOC_Request_Accept",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        },
+        {
+            "id": "4",
+            "tasktype": "TASK",
+            "name": "TOC_Schedule_Transport",
+            "description": "Schedule Patient Transport for TOC",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "day(3)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Transport_Scheduled)"
+                }
+            }],
+            "input": [{
+                "name": "TOC_Request_Accept",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }],
+            "output": [{
+                "name": "TOC_Transport_Scheduled",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        },
+        {
+            "id": "5",
+            "tasktype": "TASK",
+            "name": "Admit_Patient",
+            "description": "Patient Transferred and Admitted by Provider",
+            "owner": "Provider_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "day(4)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Patient_Admitted)"
+                }
+            }],
+            "input": [{
+                "name": "TOC_Transport_Scheduled",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }],
+            "output": [{
+                "name": "TOC_Patient_Admitted",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        },
+        {
+            "id": "6",
+            "tasktype": "TASK",
+            "name": "TOC_Workflow_Close",
+            "description": "Close TOC Pathway for Patient",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "day(5)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(TOC_Workflow_Closed)"
+                }
+            }],
+            "output": [{
+                "name": "TOC_Workflow_Closed",
+                "contenttype": "text/plain",
+                "accesstype": "URL"
+            }]
+        }
+    ]
+}
