@@ -84,12 +84,142 @@ type WorkflowDefinition struct {
 type XDWTransaction struct {
 	Action             string
 	Pathway            string
+	NHS_ID             string
 	WorkflowDefinition WorkflowDefinition
 	DSUB_BrokerURL     string
 	DSUB_ConsumerURL   string
+	Response           []byte
 }
+
+// XDW Workflow Document Structs
+
+type XDWWorkflowDocument struct {
+	XMLName                        xml.Name              `xml:"XDW.WorkflowDocument"`
+	Hl7                            string                `xml:"hl7,attr"`
+	WsHt                           string                `xml:"ws-ht,attr"`
+	Xdw                            string                `xml:"xdw,attr"`
+	Xsi                            string                `xml:"xsi,attr"`
+	SchemaLocation                 string                `xml:"schemaLocation,attr"`
+	ID                             ID                    `xml:"id"`
+	EffectiveTime                  EffectiveTime         `xml:"effectiveTime"`
+	ConfidentialityCode            ConfidentialityCode   `xml:"confidentialityCode"`
+	Patient                        PatientID             `xml:"patient"`
+	Author                         Author                `xml:"author"`
+	WorkflowInstanceId             string                `xml:"workflowInstanceId"`
+	WorkflowDocumentSequenceNumber string                `xml:"workflowDocumentSequenceNumber"`
+	WorkflowStatus                 string                `xml:"workflowStatus"`
+	WorkflowStatusHistory          WorkflowStatusHistory `xml:"workflowStatusHistory"`
+	WorkflowDefinitionReference    string                `xml:"workflowDefinitionReference"`
+	TaskList                       TaskList              `xml:"TaskList"`
+}
+type ConfidentialityCode struct {
+	Code string `xml:"code,attr"`
+}
+type EffectiveTime struct {
+	Value string `xml:"value,attr"`
+}
+type PatientID struct {
+	ID ID `xml:"id"`
+}
+type Author struct {
+	AssignedAuthor AssignedAuthor `xml:"assignedAuthor"`
+}
+type AssignedAuthor struct {
+	ID             ID             `xml:"id"`
+	AssignedPerson AssignedPerson `xml:"assignedPerson"`
+}
+type ID struct {
+	Root                   string `xml:"root,attr"`
+	Extension              string `xml:"extension,attr"`
+	AssigningAuthorityName string `xml:"assigningAuthorityName,attr"`
+}
+type AssignedPerson struct {
+	Name Name `xml:"name"`
+}
+type Name struct {
+	Family string `xml:"family"`
+	Prefix string `xml:"prefix"`
+}
+type WorkflowStatusHistory struct {
+	DocumentEvent []DocumentEvent `xml:"documentEvent"`
+}
+type TaskList struct {
+	XDWTask []XDWTask `xml:"XDWTask"`
+}
+type XDWTask struct {
+	TaskData         TaskData         `xml:"taskData"`
+	TaskEventHistory TaskEventHistory `xml:"taskEventHistory"`
+}
+type TaskData struct {
+	TaskDetails TaskDetails `xml:"taskDetails"`
+	Description string      `xml:"description"`
+	Input       []Input     `xml:"input"`
+	Output      []Output    `xml:"output"`
+}
+type TaskDetails struct {
+	ID                    string `xml:"id"`
+	TaskType              string `xml:"taskType"`
+	Name                  string `xml:"name"`
+	Status                string `xml:"status"`
+	ActualOwner           string `xml:"actualOwner"`
+	CreatedTime           string `xml:"createdTime"`
+	CreatedBy             string `xml:"createdBy"`
+	LastModifiedTime      string `xml:"lastModifiedTime"`
+	RenderingMethodExists string `xml:"renderingMethodExists"`
+}
+type TaskEventHistory struct {
+	TaskEvent []TaskEvent `xml:"taskEvent"`
+}
+type AttachmentInfo struct {
+	Identifier      string `xml:"identifier"`
+	Name            string `xml:"name"`
+	AccessType      string `xml:"accessType"`
+	ContentType     string `xml:"contentType"`
+	ContentCategory string `xml:"contentCategory"`
+	AttachedTime    string `xml:"attachedTime"`
+	AttachedBy      string `xml:"attachedBy"`
+	HomeCommunityId string `xml:"homeCommunityId"`
+}
+type Part struct {
+	Name           string         `xml:"name,attr"`
+	AttachmentInfo AttachmentInfo `xml:"attachmentInfo"`
+}
+type Output struct {
+	Part Part `xml:"part"`
+}
+type Input struct {
+	Part Part `xml:"part"`
+}
+type DocumentEvent struct {
+	EventTime           string `xml:"eventTime"`
+	EventType           string `xml:"eventType"`
+	TaskEventIdentifier string `xml:"taskEventIdentifier"`
+	Author              string `xml:"author"`
+	PreviousStatus      string `xml:"previousStatus"`
+	ActualStatus        string `xml:"actualStatus"`
+}
+type TaskEvent struct {
+	ID         string `xml:"id"`
+	EventTime  string `xml:"eventTime"`
+	Identifier string `xml:"identifier"`
+	EventType  string `xml:"eventType"`
+	Status     string `xml:"status"`
+}
+
+type DocumentEvents []DocumentEvent
+
 type XDW_Int interface {
 	processRequest() error
+}
+
+func (e DocumentEvents) Len() int {
+	return len(e)
+}
+func (e DocumentEvents) Less(i, j int) bool {
+	return e[i].EventTime > e[j].EventTime
+}
+func (e DocumentEvents) Swap(i, j int) {
+	e[i], e[j] = e[j], e[i]
 }
 
 // Convienance method to obtain initialised WorkflowDefinition struct which will be needed in the your tukxdw.New_Transaction(&XDWTransaction) if i.Action='register'
@@ -114,13 +244,24 @@ func (i *XDWTransaction) processRequest() error {
 		return i.registerWorkflowDefinition()
 	case tukcnst.XDW_CONTENT_CREATOR:
 	case tukcnst.XDW_CONTENT_CONSUMER:
+		return i.newXDWContentConsumer()
 	case tukcnst.XDW_CONTENT_UPDATER:
 	}
 	return nil
 }
+func (i *XDWTransaction) newXDWContentConsumer() error {
+	var err error
+	wfs := tukdbint.Workflows{Action: tukcnst.SELECT}
+	wf := tukdbint.Workflow{XDW_Key: i.Pathway + i.NHS_ID}
+	wfs.Workflows = append(wfs.Workflows, wf)
+	err = tukdbint.NewDBEvent(&wfs)
+
+	return err
+}
 func (i *XDWTransaction) registerWorkflowDefinition() error {
+	var err error
 	pwyExpressions := make(map[string]string)
-	if err := i.persistXDWDefinition(); err == nil {
+	if err = i.persistXDWDefinition(); err == nil {
 		log.Println("Parsing XDW Tasks for potential DSUB Broker Subscriptions")
 		for _, task := range i.WorkflowDefinition.Tasks {
 			for _, inp := range task.Input {
@@ -153,9 +294,9 @@ func (i *XDWTransaction) registerWorkflowDefinition() error {
 		for expression := range pwyExpressions {
 			event.Expressions = append(event.Expressions, expression)
 		}
-		tukdsub.New_Transaction(&event)
+		err = tukdsub.New_Transaction(&event)
 	}
-	return nil
+	return err
 }
 func (i *XDWTransaction) persistXDWDefinition() error {
 	log.Println("Processing WF Def for Pathway : " + i.WorkflowDefinition.Ref)

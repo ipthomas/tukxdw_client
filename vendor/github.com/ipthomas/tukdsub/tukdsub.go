@@ -28,6 +28,7 @@ type DSUBEvent struct {
 	EventMessage    string
 	Expressions     []string
 	Pathway         string
+	RowID           int
 	DBConnection    tukdbint.TukDBConnection
 	Subs            tukdbint.Subscriptions
 	Request         []byte
@@ -358,11 +359,16 @@ func (i *DSUBEvent) setExternalIdentifiers() {
 
 // (i *DSUBCancel) NewEvent() creates an IHE DSUB cancel message and sends it to the DSUB broker
 func (i *DSUBEvent) cancelSubscriptions() error {
-	if i.Pathway == "" {
-		return errors.New("pathway not set invalid request")
+	if i.Pathway == "" && i.RowID == 0 {
+		return errors.New("pathway or rowid not set invalid request")
 	}
 	i.Subs = tukdbint.Subscriptions{Action: tukcnst.DELETE}
-	delsub := tukdbint.Subscription{Pathway: i.Pathway}
+	delsub := tukdbint.Subscription{}
+	if i.Pathway != "" {
+		delsub.Pathway = i.Pathway
+	} else {
+		delsub.Id = i.RowID
+	}
 	i.Subs.Subscriptions = append(i.Subs.Subscriptions, delsub)
 	return tukdbint.NewDBEvent(&i.Subs)
 }
@@ -443,8 +449,8 @@ func (i *DSUBEvent) createSubscriptions() error {
 						return err
 					}
 					i.Subs.Subscriptions = append(i.Subs.Subscriptions, newSub)
-					if i.Subs.LastInsertId < int64(newsubs.Subscriptions[1].Id) {
-						i.Subs.LastInsertId = int64(newsubs.Subscriptions[1].Id)
+					if i.Subs.LastInsertId < int64(newSub.Id) {
+						i.Subs.LastInsertId = int64(newSub.Id)
 					}
 					i.Subs.Count = i.Subs.Count + 1
 				} else {
