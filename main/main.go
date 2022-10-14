@@ -15,10 +15,10 @@ import (
 )
 
 var (
-	_, b, _, _              = runtime.Caller(0)
-	Basepath                = filepath.Dir(b)
-	LogFile                 *os.File
-	TUK_DB_URL_AWS          = "https://5k2o64mwt5.execute-api.eu-west-1.amazonaws.com/beta/"
+	_, b, _, _ = runtime.Caller(0)
+	Basepath   = filepath.Dir(b)
+	LogFile    *os.File
+	//TUK_DB_URL_AWS          = "https://5k2o64mwt5.execute-api.eu-west-1.amazonaws.com/beta/"
 	DSUB_BROKER_URL         = "http://spirit-test-01.tianispirit.co.uk:8081/SpiritXDSDsub/Dsub"
 	DSUB_CONSUMER_URL_AWS   = "https://cjrvrddgdh.execute-api.eu-west-1.amazonaws.com/beta/"
 	DSUB_CONSUMER_URL_Local = "http://tukeventserver.ddns.net:8081/eventservice/event"
