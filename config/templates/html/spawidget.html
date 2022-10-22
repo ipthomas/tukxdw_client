@@ -1,0 +1,145 @@
+{{define "spawidget"}}{{$url:= .EventServices.EventService.EventUrl}}{{$pwy:= .Pathway}}{{$nhsid:=.NHSId}}{{$usr:=.EventServices.EventService.User}}{{$org:=.EventServices.EventService.Org}}{{$role:=.EventServices.EventService.Role}}{{$event := .}}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>ICS Event Service</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js" integrity="sha512-yFjZbTYRCJodnuyGlsKamNE/LlEaEAxSUDe5+u61mV8zzqJVFOH7TnULE2/PP/l5vKWpUNnF4VGVkXh3MjgLsg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="wrapper">
+        <nav id="sidebar">
+            <ul class="list-unstyled components">
+                <li>
+                    <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">{{if eq .Pathway ""}}Select{{else}}Switch{{end}} Pathway</a>
+                    <ul class="collapse list-unstyled" id="pathwaymenu">
+                        {{range .EventServices.Pathways}}
+                        <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=xdws&pathway={{.Name}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$event.SAML}}" target="dashboardItem">{{mappedid .Name}}</a></li>
+                        {{end}}
+                    </ul>
+                </li>
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=spa&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$event.SAML}}">ICS Dashboard</a></li>
+            </ul>
+        </nav>
+        <div id="content">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-outline-primary btn-sm">Toggle Sidebar</button>
+                </div>
+            </nav>
+        </div>
+        <div class="col-sm-12">
+            <iframe onload="window.top.scrollTo(0,0);" frameborder="0" style="width:100%;height: 100%;" name="spacontent" title="spacontent" src="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{$nhsid}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{$event.SAML}}"></iframe>
+        </div>
+    </div>
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#sidebarCollapse').on('click', function() {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+<script>
+    function togglesidebar() {
+        $('#sidebar').toggleClass('active');
+    }
+</script>
+<style>
+    .wrapper {
+        display: flex;
+        align-items: stretch;
+    }
+    
+    #sidebar {
+        min-width: 250px;
+        max-width: 250px;
+        min-height: 100vh;
+        background: #d8dbe7;
+        color: rgb(0, 0, 0);
+        transition: all 0.3s;
+    }
+    
+    #sidebar.active {
+        margin-left: -250px;
+    }
+    
+    #sidebar .sidebar-header {
+        padding: 20px;
+        background: #cfd6f3;
+    }
+    
+    #sidebar ul.components {
+        padding: 20px 0;
+        border-bottom: 1px solid #96acb8;
+    }
+    
+    #sidebar ul p {
+        color: rgb(5, 5, 5);
+        padding: 3px;
+    }
+    
+    #sidebar ul li a {
+        padding: 10px;
+        font-size: 1.1em;
+        display: block;
+    }
+    
+    #sidebar ul li a:hover {
+        color: #f6f7fa;
+        background: rgb(72, 179, 250);
+    }
+    
+    #sidebar ul li.active>a,
+    a[aria-expanded="true"] {
+        color: rgb(2, 2, 2);
+        background: #6d7fcc;
+    }
+    
+    ul ul a {
+        font-size: 0.9em !important;
+        padding-left: 30px !important;
+        background: #b0b9e0;
+    }
+    
+    a[data-toggle="collapse"] {
+        position: relative;
+    }
+    
+    .dropdown-toggle::after {
+        display: block;
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+    }
+    
+    @media (max-width: 768px) {
+        #sidebar {
+            margin-left: -250px;
+        }
+        #sidebar.active {
+            margin-left: 0;
+        }
+    }
+</style>
+
+</html>
+{{end}}

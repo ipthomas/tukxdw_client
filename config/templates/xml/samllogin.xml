@@ -1,0 +1,12 @@
+{{define "samllogin"}}
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope" xmlns:env="http://www.w3.org/2003/05/soap-envelope">
+   <env:Header/>
+   <S:Body>
+      <ns2:loginIdentityAssertion xmlns:ns2="http://remoting.ws.ehr.spirit.com/">
+         <arg0>
+            <assertion>{{.B64SAML}}</assertion>
+         </arg0>
+      </ns2:loginIdentityAssertion>
+   </S:Body>
+</S:Envelope>
+{{end}}

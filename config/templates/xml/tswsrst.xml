@@ -1,0 +1,20 @@
+{{define "tswsrst"}}
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:rem="http://remoting.ws.ehr.spirit.com/">
+   <soap:Header/>
+   <soap:Body>
+      <rem:requestSTS>
+         <arg0>
+            <claims>{{.ClaimDialect}}</claims>
+            <endpoint>{{.ClaimValue}}</endpoint>
+            <organization>{{.Organisation}}</organization>
+            <organizationID>urn:oid:{{mappedid .Organisation}}</organizationID>
+            <password>{{.Password}}</password>
+            <purposeOfUse>{{.POU}}</purposeOfUse>
+            <role>{{.Role}}</role>
+            <subjectID>{{.User}}</subjectID>
+            <username>{{.User}}</username>
+         </arg0>
+      </rem:requestSTS>
+   </soap:Body>
+</soap:Envelope>
+{{end}}

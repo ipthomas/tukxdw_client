@@ -1,0 +1,14 @@
+{{define "snip_workflow_header"}}
+<div class="row">
+    <div class="col-sm-2">
+        <label style="text-align: center;color: darkblue" for="lupdt">Last Update</label>
+        <p id="lupdt" name="lupdt">{{lastupdatetime .}}</p>
+    </div>
+    <div class="col-sm-3">
+        <label style="text-align: center;color: darkblue" for="lupdt">Opened On</label>
+        <p id="lupdt" name="lupdt">{{.XDWWorkflowDocument.EffectiveTime.Value}}</p>
+        <label style="text-align: center;color: darkblue" for="user">Opened By</label>
+        <p id="user" name="user">{{.XDWWorkflowDocument.Author.AssignedAuthor.AssignedPerson.Name.Family}} {{.XDWWorkflowDocument.Author.AssignedAuthor.ID.Extension}}</p>
+    </div>
+</div>
+{{end}}

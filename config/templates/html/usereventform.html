@@ -1,0 +1,14 @@
+{{define "usereventform"}}{{$url := .EventServices.EventService.EventUrl}}
+<form action="{{$url}}" target="results">
+    <input type="hidden" class="form-control" id="saml" name="saml" value={{.SAML}}>
+    <input type="hidden" class="form-control" id="act" name="act" value="events">
+    <input type="hidden" class="form-control" id="task" name="task" value="create">
+    <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{.Pathway}}">
+    <input type="hidden" class="form-control" id="nhs" name="nhs" value="{{.NHSId}}">
+    <input type="hidden" class="form-control" id="user" name="user" value="{{.EventServices.EventService.User}}">
+    <input type="hidden" class="form-control" id="org" name="org" value="{{.EventServices.EventService.Org}}">
+    <input type="hidden" class="form-control" id="role" name="role" value="{{.EventServices.EventService.Role}}">
+    <textarea type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes"></textarea>
+    <button type="submit" class="btn btn-primary sm-4">Create User Event</button>
+</form>
+{{template "footer"}}{{end}}

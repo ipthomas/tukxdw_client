@@ -1,0 +1,50 @@
+{{define "snip_workflow_section_docevents"}}
+<div class="container-fluid" id="workflowStatusDIV">
+    {{range .XDWWorkflowDocument.WorkflowStatusHistory.DocumentEvent}}
+    <div class="row">
+        <div class="col-sm-2">
+            <label style="color: darkblue;" for="astatus">Current Status</label> {{if eq .ActualStatus "CREATED"}}
+            <p style="color: grey;" id="astatus" name="astatus">{{.ActualStatus}} <i class="fa fa-bars" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .ActualStatus "READY"}}
+            <p style="color: rgb(238, 255, 0);" id="astatus" name="astatus">{{.ActualStatus}} <i class="fa fa-hourglass-start" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .ActualStatus "IN_PROGRESS"}}
+            <p style="color: orange;" id="astatus" name="astatus">{{.ActualStatus}} <i class="fa fa-cog fa-spin fa-1x fa-fw" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .ActualStatus "COMPLETE"}}
+            <p style="color: green;" id="astatus" name="astatus">{{.ActualStatus}} <i class="fa fa-hourglass-end" aria-hidden="true"></i>
+            </p>
+            {{end}}
+        </div>
+        <div class="col-sm-2">
+            <label style="color: darkblue;" for="pstatus">Previous Status</label> {{if eq .PreviousStatus "CREATED"}}
+            <p style="color: grey;" id="astatus" name="pstatus">{{.PreviousStatus}} <i class="fa fa-bars" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .PreviousStatus "READY"}}
+            <p style="color: rgb(238, 255, 0);" id="pstatus" name="astatus">{{.PreviousStatus}} <i class="fa fa-hourglass-start" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .PreviousStatus "IN_PROGRESS"}}
+            <p style="color: orange;" id="astatus" name="astatus">{{.PreviousStatus}} <i class="fa fa-cog fa-spin fa-1x fa-fw" aria-hidden="true"></i>
+            </p>
+            {{end}} {{if eq .PreviousStatus "COMPLETE"}}
+            <p style="color: green;" id="astatus" name="astatus">{{.PreviousStatus}} <i class="fa fa-hourglass-end" aria-hidden="true"></i>
+            </p>
+            {{end}}
+        </div>
+        <div class="col-sm-2">
+            <label style="color: darkblue;" for="evtime">Event Time</label>
+            <p id="evtime" name="evtime">{{.EventTime}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color: darkblue;" for="evtype">Event Type</label>
+            <p id="evtype" name="evtype">{{mappedid .EventType}}</p>
+        </div>
+        <div class="col-sm-4">
+            <label style="color: darkblue;" for="evtype">Author</label>
+            <p id="author" name="author">{{.Author}}</p>
+        </div>
+    </div>
+    {{end}}
+</div>
+{{end}}

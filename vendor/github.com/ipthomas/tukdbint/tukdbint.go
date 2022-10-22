@@ -10,10 +10,9 @@ import (
 	"strings"
 	"time"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/ipthomas/tukcnst"
 	"github.com/ipthomas/tukhttp"
-
-	_ "github.com/go-sql-driver/mysql"
 )
 
 var (
@@ -32,6 +31,18 @@ type TukDBConnection struct {
 	DB_URL        string
 	DBReader_Only bool
 }
+type Templates struct {
+	Action       string     `json:"action"`
+	LastInsertId int64      `json:"lastinsertid"`
+	Count        int        `json:"count"`
+	Templates    []Template `json:"templates"`
+}
+type Template struct {
+	Id       int    `json:"id"`
+	Name     string `json:"name"`
+	IsXML    bool   `json:"isxml"`
+	Template string `json:"template"`
+}
 type Subscription struct {
 	Id         int    `json:"id"`
 	Created    string `json:"created"`
@@ -44,10 +55,10 @@ type Subscriptions struct {
 	Action        string         `json:"action"`
 	LastInsertId  int64          `json:"lastinsertid"`
 	Count         int            `json:"count"`
-	Subscriptions []Subscription `json:"Subscriptions"`
+	Subscriptions []Subscription `json:"subscriptions"`
 }
 type Event struct {
-	EventId            int64  `json:"eventid"`
+	Id                 int    `json:"id"`
 	Creationtime       string `json:"creationtime"`
 	DocName            string `json:"docname"`
 	ClassCode          string `json:"classcode"`
@@ -67,7 +78,7 @@ type Event struct {
 	Topic              string `json:"topic"`
 	Pathway            string `json:"pathway"`
 	Notes              string `json:"notes"`
-	Version            string `json:"ver"`
+	Version            int    `json:"ver"`
 	BrokerRef          string `json:"brokerref"`
 }
 type Events struct {
@@ -79,6 +90,8 @@ type Events struct {
 type Workflow struct {
 	Id        int    `json:"id"`
 	Created   string `json:"created"`
+	Pathway   string `json:"pathway"`
+	NHSId     string `json:"nhsid"`
 	XDW_Key   string `json:"xdw_key"`
 	XDW_UID   string `json:"xdw_uid"`
 	XDW_Doc   string `json:"xdw_doc"`
@@ -113,7 +126,7 @@ type IdMaps struct {
 	LidMap       []IdMap
 }
 type IdMap struct {
-	Id  int    `json:"id"`
+	Id  int64  `json:"id"`
 	Lid string `json:"lid"`
 	Mid string `json:"mid"`
 }
@@ -276,7 +289,7 @@ func (i *Events) newEvent() error {
 
 		for rows.Next() {
 			ev := Event{}
-			if err := rows.Scan(&ev.EventId, &ev.Creationtime, &ev.DocName, &ev.ClassCode, &ev.ConfCode, &ev.FormatCode, &ev.FacilityCode, &ev.PracticeCode, &ev.Expression, &ev.Authors, &ev.XdsPid, &ev.XdsDocEntryUid, &ev.RepositoryUniqueId, &ev.NhsId, &ev.User, &ev.Org, &ev.Role, &ev.Topic, &ev.Pathway, &ev.Notes, &ev.Version); err != nil {
+			if err := rows.Scan(&ev.Id, &ev.Creationtime, &ev.DocName, &ev.ClassCode, &ev.ConfCode, &ev.FormatCode, &ev.FacilityCode, &ev.PracticeCode, &ev.Expression, &ev.Authors, &ev.XdsPid, &ev.XdsDocEntryUid, &ev.RepositoryUniqueId, &ev.NhsId, &ev.User, &ev.Org, &ev.Role, &ev.Topic, &ev.Pathway, &ev.Notes, &ev.Version); err != nil {
 				switch {
 				case err == sql.ErrNoRows:
 					return nil
@@ -389,6 +402,54 @@ func (i *XDWS) newEvent() error {
 	}
 	return err
 }
+func (i *Templates) newEvent() error {
+	if DB_URL != "" {
+		return i.newAWSEvent()
+	}
+	var err error
+	var stmntStr = tukcnst.SQL_DEFAULT_TEMPLATES
+	var rows *sql.Rows
+	var vals []interface{}
+	ctx, cancelCtx := context.WithTimeout(context.Background(), 2*time.Second)
+	defer cancelCtx()
+	if len(i.Templates) > 0 {
+		if stmntStr, vals, err = createPreparedStmnt(i.Action, tukcnst.TEMPLATES, reflectStruct(reflect.ValueOf(i.Templates[0]))); err != nil {
+			log.Println(err.Error())
+			return err
+		}
+	}
+	sqlStmnt, err := DBConn.PrepareContext(ctx, stmntStr)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	defer sqlStmnt.Close()
+
+	if i.Action == tukcnst.SELECT {
+		rows, err = setRows(ctx, sqlStmnt, vals)
+		if err != nil {
+			log.Println(err.Error())
+			return err
+		}
+		for rows.Next() {
+			tmplt := Template{}
+			if err := rows.Scan(&tmplt.Id, &tmplt.Name, &tmplt.IsXML, &tmplt.Template); err != nil {
+				switch {
+				case err == sql.ErrNoRows:
+					return nil
+				default:
+					log.Println(err.Error())
+					return err
+				}
+			}
+			i.Templates = append(i.Templates, tmplt)
+			i.Count = i.Count + 1
+		}
+	} else {
+		i.LastInsertId, err = setLastID(ctx, sqlStmnt, vals)
+	}
+	return err
+}
 func (i *IdMaps) newEvent() error {
 	if DB_URL != "" {
 		return i.newAWSEvent()
@@ -494,13 +555,19 @@ func reflectStruct(i reflect.Value) map[string]interface{} {
 			if tid > 0 {
 				params[strings.ToLower(structType.Field(f).Name)] = tid
 			}
-		}
-		if structType.Field(f).Name != "Id" && i.Field(f).Interface() != "" {
-			log.Printf("Reflecting Field %s Value %v", structType.Field(f).Name, i.Field(f).Interface())
-			params[strings.ToLower(structType.Field(f).Name)] = i.Field(f).Interface()
+		} else {
+			if structType.Field(f).Name == "Version" {
+				tver := i.Field(f).Interface().(int)
+				if tver != -1 {
+					params[strings.ToLower(structType.Field(f).Name)] = tver
+				}
+			} else {
+				if i.Field(f).Interface() != "" {
+					params[strings.ToLower(structType.Field(f).Name)] = i.Field(f).Interface()
+				}
+			}
 		}
 	}
-	log.Printf("Obtained %v Key Values - %s", len(params), params)
 	return params
 }
 func createPreparedStmnt(action string, table string, params map[string]interface{}) (string, []interface{}, error) {
@@ -632,6 +699,14 @@ func (i *IdMaps) newAWSEvent() error {
 func (i *EventAcks) newAWSEvent() error {
 	body, _ := json.Marshal(i)
 	awsreq := aws_APIRequest(i.Action, tukcnst.EVENT_ACKS, body)
+	if err := tukhttp.NewRequest(&awsreq); err != nil {
+		return err
+	}
+	return json.Unmarshal(awsreq.Response, &i)
+}
+func (i *Templates) newAWSEvent() error {
+	body, _ := json.Marshal(i)
+	awsreq := aws_APIRequest(i.Action, tukcnst.TEMPLATES, body)
 	if err := tukhttp.NewRequest(&awsreq); err != nil {
 		return err
 	}

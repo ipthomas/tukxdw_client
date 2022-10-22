@@ -1,0 +1,74 @@
+{{define "pixmpatient"}}
+<div class="container-fluid">
+    {{if ne (len .PIXmResponse.Entry) 0}} {{range $entry:= .PIXmResponse.Entry}}
+    <div class="row">
+        <div class="col-sm-1">
+            <label style="color:blue;" for="familyname">Family</label>
+            <p id="familyname" name="familyname">{{range $entry.Resource.Name}}{{.Family}} {{end}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="givenname">Given</label>
+            <p id="givenname" name="givenname">{{range $entry.Resource.Name}}{{.Given}} {{end}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="nameuse">Use</label>
+            <p id="nameuse" name="nameuse">{{range $entry.Resource.Name}}{{.Use}} {{end}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="dob">Birth Date</label>
+            <p id="dob" name="dob">{{$entry.Resource.BirthDate}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="gender">Gender</label>
+            <p id="pc" name="pc">{{$entry.Resource.Gender}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="pc">PC</label>
+            <p id="pc" name="pc">{{range $entry.Resource.Address}}{{.PostalCode}} {{end}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="addr">Address</label>
+            <p id="addr" name="addr">{{range $entry.Resource.Address}}{{.Line}} {{end}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="city">City</label>
+            <p id="city" name="city">{{range $entry.Resource.Address}}{{.City}} {{end}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="addruse">Use</label>
+            <p id="addruse" name="addruse">{{range $entry.Resource.Address}}{{.Use}} {{end}}</p>
+        </div>
+    </div>
+    {{end}}
+    <div class="row">
+        <div class="col-sm-12">
+            <hr></hr>
+        </div>
+    </div>
+    <div class="row" style="color:blue;">
+        <div class="col-sm-3">
+            <p></p>
+        </div>
+        <div class="col-sm-3">
+            <label for="pid">Patient ID</label>
+        </div>
+        <div class="col-sm-6">
+            <label for="authuid">ID Authority</label>
+        </div>
+    </div>
+    {{range $entry:= .PIXmResponse.Entry}} {{range $entry.Resource.Identifier}}
+    <div class="row">
+        <div class="col-sm-3">
+            <p></p>
+        </div>
+        <div class="col-sm-3">
+            <p id="pid" name="pid">{{.Value}}</p>
+        </div>
+        <div class="col-sm-6">
+            <p id="authuid" name="authuid">{{mappedid (splitfhiroid .System)}}</p>
+        </div>
+    </div>
+    {{end}}{{end}}{{else}}
+    <h3>Unable to connect to Patient Service. Some Patient Demographics are not available</h3>
+    {{end}}
+</div>{{template "footer"}}{{end}}

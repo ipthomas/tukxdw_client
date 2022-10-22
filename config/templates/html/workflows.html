@@ -1,0 +1,48 @@
+{{define "workflows"}} {{ template "header" .}}{{$url := .EventServices.EventService.EventUrl}}{{$saml:= .SAML}}{{$usr := .EventServices.EventService.User}}{{$org := .EventServices.EventService.Org}}{{$role := .EventServices.EventService.Role}}{{$pw :=
+.Pathway}}{{$nhsid := .NHSId}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <hr></hr>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-10">
+            <h3 style="text-align:center;color:darkblue">{{$pw}} Workflows {{$nhsid}}</h3>
+        </div>
+    </div>
+    {{range .XDWDocuments}}
+    <div class="row">
+        <div class="col-sm-2">
+            <label style="color:blue" for="pwy">Pathway</label>
+            <p id="pwy" name="pwy">{{mappedid (pwyfromxdwkey .XDW_Key)}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue" for="nhsid">NHS ID</label>
+            <p id="nhsid" name="nhsid">{{nhsidfromxdwkey .XDW_Key}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue" for="created">Created</label>
+            <p id="created" name="created">{{.Created}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue" for="xdwkey">XDW Key</label>
+            <p id="xdwkey" name="xdwkey">{{.XDW_Key}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue" for="published">Published</label>
+            <p id="published" name="published">{{.Published}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue" for="version">Timeline</label>
+            <p id="version" name="version"><a href="{{$url}}?act=widget&task=timeline&pathway={{pwyfromxdwkey .XDW_Key}}&nhs={{nhsidfromxdwkey .XDW_Key}}&user={{$usr}}&org={{$org}}&role={{$role}}&pathway={{$pw}}&saml={{$saml}}">Version {{.Version}}</a></p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <hr></hr>
+        </div>
+    </div>
+    {{end}}
+    </tbody>
+    {{ template "footer"}} {{end}}

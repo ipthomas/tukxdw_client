@@ -1,0 +1,20 @@
+{{define "pixquery"}}
+<S:Envelope xmlns:S="http://www.w3.org/2003/05/soap-envelope">
+  <S:Body>
+    <ns2:queryPatients xmlns:ns2="http://remoting.ws.ehr.spirit.com/">
+      <arg0>
+        <stateID>{{.StateID}}</stateID>
+        <requestData>
+          <pid>
+            <domain>
+              <authUniversalID>{{.PIDOid}}</authUniversalID>
+            </domain>
+            <patientID>{{.PID}}</patientID>
+          </pid>
+        </requestData>
+        <xcpd>false</xcpd>
+      </arg0>
+    </ns2:queryPatients>
+  </S:Body>
+</S:Envelope>
+{{end}}

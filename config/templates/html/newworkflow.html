@@ -1,0 +1,9 @@
+{{define "newworkflow"}}{{template "header" .}}
+<div class="col-sm-6">
+    <h3>Patient is not on an Active {{mappedid .Pathway}} Pathway</h3>
+</div>
+{{template "horizontalline"}}
+<div class="col-sm-12">
+    {{if eq .EventServices.EventService.PatientSrvc "pixmsrvc"}} {{template "pixmpatient" .}} {{else}} {{template "pixpatient" .}} {{end}}
+</div>
+{{template "footer" .}} {{end}}

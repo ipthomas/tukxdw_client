@@ -1,0 +1,104 @@
+{
+    "ref": "pathalert",
+    "name": "Pathology Alert Workflow",
+    "confidentialitycode": "Normal",
+    "startbytime": "hour(1)",
+    "completebytime": "day(2)",
+    "expirationtime": "day(2)",
+    "completionBehavior": [{
+        "completion": {
+            "condition": "task(3)"
+        }
+    }],
+    "tasks": [
+        {   "id": "1",
+            "tasktype": "NOTIFICATION",
+            "name": "Path_Anomaly_Identified",
+            "description": "Notifyification of Pathology Result Anomaly",
+            "expirationtime": "day(1)",
+            "startbytime": "hour(1)",
+            "completebytime": "hour(2)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(Path_Anomaly_Identified)"
+                }},
+                {
+                "completion": {
+                    "condition": "output(Path1^^TypeCode_LPRES_2022)"
+                }}],
+            "output": [{
+                "name": "Path_Anomaly_Identified",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "Path1^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        },
+        {   "id": "2",
+            "tasktype": "Notification",
+            "name": "Path_Anomily_Claimed",
+            "description": "Pathology Result Anomaly Claimed",
+            "expirationtime": "day(1)",
+            "startbytime": "day(1)",
+            "completebytime": "day(1)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(LAC2^^TypeCode_EPUT_2018)"
+                }
+            }],
+            "input": [{
+                "name": "Path_Anomaly_Identified",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "Path1^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }],
+            "output": [{
+                "name": "Path_Anomaly_Claimed",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "Path2^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        },
+        {
+            "id": "3",
+            "tasktype": "TASK",
+            "name": "Path_Results",
+            "description": "Provider Claimed Health Assessment E-Referral",
+            "expirationtime": "day(2)",
+            "completebytime": "day(2)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(Path3^^TypeCode_EPUT_2018)"
+                }
+            }],
+            "input": [{
+                "name": "Path_Anomaly_Claimed",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },{
+                "name": "Path2^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }],
+            "output": [{
+                "name": "Path3^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        }
+    ]
+}

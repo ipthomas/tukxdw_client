@@ -1,0 +1,39 @@
+{{define "subscriptions"}} {{ template "header" .}}{{$url := .EventServices.EventService.EventUrl}}{{$event:= .}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <h4 style="color: blue; text-align:center">Event Service Broker Subscriptions</h3>
+        </div>
+    </div>
+    {{template "horizontalline"}} {{range $k,$v := .DBSubscriptions.Subscriptions}}
+    {{ if ne $k 0 }}
+    <div class="row">
+        <div class="col-sm-2">
+            <label for="expression">Created</label>
+            <p id="expression" name="expression">{{$v.Created}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label for="expression">Pathway</label>
+            <p id="expression" name="expression">{{mappedid $v.Pathway}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label for="expression">Expression</label>
+            <p id="expression" name="expression">{{$v.Expression}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-mb-2">
+            <a href="{{$url}}?act=subscriber&task=cancel&id={{$v.Id}}&saml={{$event.SAML}}">
+                <span><button class="btn btn-outline-primary btn-sm" type="button"></span>Cancel Subscription</button>
+                </span>
+            </a>
+        </div>
+        <div class="col-sm-10">
+            <p id="expression" name="expression">{{$v.BrokerRef}}</p>
+        </div>
+    </div>
+    {{template "horizontalline"}}
+    {{end}}
+    {{end}}
+</div>
+{{ template "footer"}} {{end}}

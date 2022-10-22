@@ -1,0 +1,78 @@
+{
+    "ref": "radconsult",
+    "name": "Radiology Consultation",
+    "confidentialitycode": "Normal",
+    "startbytime": "hour(1)",
+    "expirationtime": "hour(2)",
+    "completionBehavior": [{
+        "completion": {
+            "condition": "task(2)"
+        }
+    }],
+    "tasks": [
+        {   "id": "1",
+            "tasktype": "NOTIFICATION",
+            "name": "RAD_Consult_Request",
+            "description": "Send Radiology Consult Request",
+            "expirationtime": "hour(1)",
+            "completebytime": "hour(1)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(RAD_Consult_Request) and task(2)"
+                }},
+                {
+                "completion": {
+                    "condition": "output(RAD1^^TypeCode_LPRES_2022) and taks(2)"
+                }}],
+            "output": [{
+                "name": "RAD_Consult_Request",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "RAD1^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        },
+        {
+            "id": "2",
+            "tasktype": "NOTIFICATION",
+            "name": "RAD_Consult_Claimed",
+            "description": "Consultant Claimed Radiology Consult Request",
+            "expirationtime": "hour(1)",
+            "completebytime": "hour(1)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(RAD_Consult_Accept)"
+                }
+                },{
+                "completion": {
+                    "condition": "output(RAD_Consult_Accept)"
+                }
+            }],
+            "input": [{
+                "name": "RAD_Consult_Request",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "RAD1^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }],
+            "output": [{
+                "name": "RAD_Consult_Accept",
+                "contenttype": "text/plain",
+                "accesstype": "MIME"
+            },
+            {
+                "name": "RAD2^^TypeCode_LPRES_2022",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        }
+    ]
+}

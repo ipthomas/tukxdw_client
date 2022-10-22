@@ -1,0 +1,68 @@
+{{define "timelinewidget"}}{{template "header"}}{{$event := .}}{{template "horizontalline"}}
+<div class="container-fluid">
+    <div class="center-block">
+        <div class="row">
+            <div class="col-sm-10">
+                <h4 style="text-align:center;color:darkblue">{{mappedid .Pathway}} Timeline for {{.PatientDetails.GivenName}} {{.PatientDetails.FamilyName}} {{.NHSId}}</h4>
+                {{if ne .XDWWorkflowDocument.EffectiveTime.Value ""}}
+                <p style="text-align:center;color:darkblue">Created {{.XDWWorkflowDocument.EffectiveTime.Value}}</p>
+                {{end}}
+                <a href="{{$event.EventServices.EventService.EventUrl}}?act=widget&task=xdw&pathway={{$event.Pathway}}&nhs={{$event.NHSId}}&user={{$event.EventServices.EventService.User}}&org={{$event.EventServices.EventService.Org}}&role={{$event.EventServices.EventService.Role}}&saml={{$event.SAML}}"
+                    target="dashboardItem">
+                    <h5 style="text-align:center;color:rgb(152, 192, 230)">View Workflow Details</h5>
+                </a>
+            </div>
+        </div>
+        {{template "horizontalline"}}
+        <div class="row">
+            <div class="col-sm-10">
+                <div style="display:inline-block;width:100%;overflow-y:auto;margin-left: 2%;">
+                    <ul class="timeline">
+                        {{range $k,$t := .XDWWorkflowDocument.TaskList.XDWTask}}
+                        <li class="timeline-item">
+                            <a href="{{$event.EventServices.EventService.EventUrl}}?act=widget&task=xdw&pathway={{$event.Pathway}}&nhs={{$event.NHSId}}&user={{$event.EventServices.EventService.User}}&org={{$event.EventServices.EventService.Org}}&role={{$event.EventServices.EventService.Role}}&saml={{$event.SAML}}"
+                                target="results">
+                            {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                            {{if taskoverdue $event $t.TaskData.TaskDetails.ID}}
+                            <div class="timeline-badge warning"><i class="fa fa-thumbs-down"></i></div>
+                            {{else}}
+                            <div class="timeline-badge success"><i class="fa fa-thumbs-up"></i></div>
+                            {{end}}
+                            {{end}} 
+                            {{if or (eq $t.TaskData.TaskDetails.Status "IN_PROGRESS") (eq $t.TaskData.TaskDetails.Status "REQUESTED")}}
+                            <div class="timeline-badge info"><i class="fa fa-tasks"></i></div>
+                            {{end}} {{if and (ne $t.TaskData.TaskDetails.Status "COMPLETE") (ne $t.TaskData.TaskDetails.Status "IN_PROGRESS")}}
+                            <div class="timeline-badge secondary"><i class="fa-solid fa-business-time"></i></div>
+                            {{end}}
+                            </a>
+                            <div class="timeline-panel">
+                                <div class="timeline-heading">
+                                    <h5><small class="text-muted">Task Duration {{taskduration $event $t.TaskData.TaskDetails.ID}}</small></h5>
+                                </div>
+                                <div class="timeline-body">
+                                    <h5 class="timeline-title">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h5>
+                                    {{if ne $t.TaskData.TaskDetails.Status "CREATED"}}
+                                    <p style="color:rgb(4, 164, 192)">Last Updated By {{$t.TaskData.TaskDetails.ActualOwner}}</p>
+                                    {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                    <p style="color:green">COMPLETED {{lasttaskcompletetime $event $t.TaskData.TaskDetails.ID}}</p>
+                                    {{end}} {{if ne $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                    <p style="color:rgb(214, 23, 198)">{{$t.TaskData.TaskDetails.Status}}</p>
+                                    {{end}} {{end}}{{if eq $t.TaskData.TaskDetails.Status "CREATED"}}
+                                    <p>Workflow Task Not Started</p>
+                                    {{end}}
+
+                                </div>
+
+                            </div>
+                        </li>
+                        {{end}}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+            </div>
+        </div>
+    </div>
+    {{template "footer"}}{{end}} -->

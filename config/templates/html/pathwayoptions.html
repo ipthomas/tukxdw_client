@@ -1,0 +1,15 @@
+{{define "pathwayoptions"}}{{template "header"}}{{$pw := .Pathway}}
+<div class="form-group">
+    <label for="pathway">Pathway</label>
+    <select class="form-control" id="pathway" name="pathway" value="{{.Pathway}}">
+        {{range .EventServices.Pathways.Pathways}}
+        {{if eq . $pw}}
+        <option selected>{{mappedid .}}</option>
+        {{end}}
+        {{if ne . $pw}}
+        <option>{{mappedid .}}</option>
+        {{end}}
+        {{end}}
+    </select>
+</div>
+{{template "footer"}}{{end}}

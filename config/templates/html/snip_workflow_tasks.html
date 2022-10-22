@@ -1,0 +1,118 @@
+{{define "snip_workflow_tasks"}} {{$event := .}}{{$nhsid := .NHSId}}{{$url := .EventServices.EventService.EventUrl}}{{$usr := .EventServices.EventService.User}}{{$org := .EventServices.EventService.Org}}{{$role := .EventServices.EventService.Role}}{{$pw:=.Pathway}}{{$exp:=.Expression}}{{$top:=.Topic}}
+
+<div id="tasksDIV">
+    {{range $k,$t := .XDWWorkflowDocument.TaskList.XDWTask}}
+    <div class="row">
+        {{template "snip_workflow_tasks_header" $t}}
+    </div>
+    <div class="row">
+        <div class="col-sm-1">
+            {{template "snip_workflow_task_col_status" $t}}
+        </div>
+        <div class="col-sm-1">
+            <label style="text-align: center;color: darkblue" for="user">Overdue</label> {{if taskoverdue $event $t.TaskData.TaskDetails.ID}}
+            <p style="color: red;" id="oversue" name="overdue">YES</p>
+            {{else}}
+            <p style="color: green;" id="overdue" name="overdue">NO</p>
+            {{end}}
+        </div>
+        <div class="col-sm-2">
+            <label style="text-align: center;color: darkblue" for="created">Complete By</label> {{if taskoverdue $event $t.TaskData.TaskDetails.ID}}
+            <p style="color: red;" id="completeby" name="completeby">{{taskcompletiontime $event $t.TaskData.TaskDetails.ID}}</p>
+            {{else}}
+            <p style="color: green;" id="completeby" name="completeby">{{taskcompletiontime $event $t.TaskData.TaskDetails.ID}}</p>
+            {{end}}
+        </div>
+        <div class="col-sm-3">
+            <label style="text-align: center;color: darkblue" for="created">{{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}Completed On{{else}}Last Update{{end}}</label> {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+            <p style="color: green;">{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+            {{else}}
+            <p>{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+            {{end}}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <p></p>
+        </div>
+    </div>
+    {{if $t.TaskData.Input}} {{range $t.TaskData.Input}}
+    <div class="row">
+        {{if isbrokerexpression .Part.AttachmentInfo.Name}}
+        <div class="col-sm-8">
+            {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+            <p id="inputexpression" name="inputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} Actioned By {{.Part.AttachmentInfo.AttachedBy}} On {{.Part.AttachmentInfo.AttachedTime}}</p>
+            {{else}}
+            <label style="color: darkblue;" for="inputexpression"><i class="fa-solid fa-envelope-open"></i> Waiting for EHR Generated Event - {{.Part.AttachmentInfo.Name}}</label> {{end}}
+        </div>
+        {{else}} {{$enotes:= geteventnotes .Part.AttachmentInfo.Identifier}}
+        <div class="col-sm-8">
+            {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+            <p id="inputexpression" name="inputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} is Actioned</p>
+            {{else}} {{$enotes:=geteventnotes .Part.AttachmentInfo.Identifier}}
+            <form action="{{$url}}" target="results">
+                <input type="hidden" class="form-control" id="saml" name="saml" value={{$event.SAML}}>
+                <input type="hidden" class="form-control" id="act" name="act" value="events">
+                <input type="hidden" class="form-control" id="task" name="task" value="create">
+                <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{$event.Pathway}}">
+                <input type="hidden" class="form-control" id="nhs" name="nhs" value="{{$event.NHSId}}">
+                <input type="hidden" class="form-control" id="user" name="user" value="{{$event.EventServices.EventService.User}}">
+                <input type="hidden" class="form-control" id="org" name="org" value="{{$event.EventServices.EventService.Org}}">
+                <input type="hidden" class="form-control" id="role" name="role" value="{{$event.EventServices.EventService.Role}}">
+                <input type="hidden" class="form-control" id="expression" name="expression" value="{{.Part.AttachmentInfo.Name}}"> {{if eq "" $enotes}}
+                <button type="submit" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-person-circle-check"></i> Create Event - {{.Part.AttachmentInfo.Name}} </button>
+                <textarea type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes"></textarea> {{else}}
+                <textarea disabled type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$enotes}}</textarea> {{end}}
+            </form>
+            </br>
+            {{end}}
+        </div>
+        {{end}}
+    </div>
+    {{end}}{{end}}
+
+
+    </br>
+    {{if $t.TaskData.Output}} {{range $t.TaskData.Output}}
+    <div class="row">
+        {{if isbrokerexpression .Part.AttachmentInfo.Name}}
+        <div class="col-sm-8">
+            {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+            <p id="outputexpression" name="outputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} Actioned By {{.Part.AttachmentInfo.AttachedBy}} On {{.Part.AttachmentInfo.AttachedTime}}</p>
+            {{else}}
+            <label style="color: darkblue;" for="outputexpression"><i class="fa-solid fa-envelope-open"></i> Waiting for EHR Generated Event - {{.Part.AttachmentInfo.Name}}</label> {{end}}
+        </div>
+        {{else}}
+        <div class="col-sm-8">
+            {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+            <p id="inputexpression" name="outputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} is Actioned</p>
+            {{else}} {{$enotes:=geteventnotes .Part.AttachmentInfo.Identifier}}
+            <form action="{{$url}}" target="results">
+                <input type="hidden" class="form-control" id="saml" name="saml" value={{$event.SAML}}>
+                <input type="hidden" class="form-control" id="act" name="act" value="events">
+                <input type="hidden" class="form-control" id="task" name="task" value="create">
+                <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{$event.Pathway}}">
+                <input type="hidden" class="form-control" id="nhs" name="nhs" value="{{$event.NHSId}}">
+                <input type="hidden" class="form-control" id="user" name="user" value="{{$event.EventServices.EventService.User}}">
+                <input type="hidden" class="form-control" id="org" name="org" value="{{$event.EventServices.EventService.Org}}">
+                <input type="hidden" class="form-control" id="role" name="role" value="{{$event.EventServices.EventService.Role}}">
+                <input type="hidden" class="form-control" id="expression" name="expression" value="{{.Part.AttachmentInfo.Name}}"> {{if eq "" $enotes}}
+                <button type="submit" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-person-circle-check"></i> Create Event - {{.Part.AttachmentInfo.Name}} </button>
+                <textarea type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes"></textarea> {{else}}
+                <textarea disabled type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$enotes}}</textarea> {{end}}
+            </form>
+            </br>
+            {{end}}
+        </div>
+        {{end}}
+    </div>
+    {{end}}{{end}}
+    <div class="row">
+        <div class="col-sm-11">
+            <hr></hr>
+        </div>
+    </div>
+    {{end}}
+</div>
+
+{{end}}

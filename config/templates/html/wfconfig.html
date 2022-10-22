@@ -1,0 +1,28 @@
+{{define "wfconfig"}}{{template "header"}}{{$url := .EventServices.EventService.EventUrl}}
+<div class="container-fluid">
+    <h3>{{.Op}} {{if eq .Task "get"}} Service {{end}} {{if eq .Task "getxdw"}} Pathway {{end}} {{if eq .Task "getmeta"}} XDS Meta {{end}}{{if eq .Task "gethtml"}} HTML Widget {{end}} Configuration</h3>
+    <form action="{{$url}}" target="iadmin">
+        <div class="row">
+            <input type="hidden" class="form-control" id="saml" name="saml" value={{.SAML}}>
+            <input type="hidden" class="form-control" id="act" name="act" value="{{.Act}}"> {{if eq .Task "get"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="set"> {{end}} {{if eq .Task "getmeta"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="setmeta"> {{end}}{{if eq .Task "getxdw"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="setxdw"> {{end}}{{if eq .Task "gethtml"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="sethtml"> {{end}}
+            <input type="hidden" class="form-control" id="op" name="op" value="{{.Op}}">
+            <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{.Pathway}}">
+            <input type="hidden" class="form-control" id="user" name="user" value="{{.EventServices.EventService.User}}">
+            <input type="hidden" class="form-control" id="org" name="org" value="{{.EventServices.EventService.Org}}">
+            <input type="hidden" class="form-control" id="role" name="role" value="{{.EventServices.EventService.Role}}">
+        </div>
+        <div class="row">
+            <div class="col-sm-12 ">
+                <hr></hr>
+            </div>
+        </div>
+        <textarea type="input" class="form-control" id="config" name="config" rows="25">{{.ConfigStr}}</textarea>
+        <p> </p>
+        <button type="submit" class="btn btn-primary sm-2">Update</button>
+    </form>
+</div>
+{{template "footer"}}{{end}}
