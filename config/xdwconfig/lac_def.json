@@ -2,133 +2,53 @@
     "ref": "lac",
     "name": "Looked After Child Services",
     "confidentialitycode": "Restricted",
-    "startbytime": "day(1)",
     "completebytime": "day(20)",
     "completionBehavior": [{
         "completion": {
-            "condition": "task(7)"
+            "condition": "task(6)"
         }
     }],
-    "tasks": [
-        {   "id": "1",
-            "tasktype": "NOTIFICATION",
-            "name": "LAC_Identified",
-            "description": "Notify Health Assessment Providers and LAC Team of Identified Child",
-            "expirationtime": "day(4)",
-            "startbytime": "day(1)",
-            "completebytime": "day(3)",
-            "isskipable": false,
-            "completionBehavior": [{
-                "completion": {
-                    "condition": "output(LAC_Identified)"
-                }},
-            {
-                "completion": {
-                    "condition": "output(LAC1^^TypeCode_EPUT_2018)"
-                }}],
-            "output": [{
-                "name": "LAC_Identified",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "LAC1^^TypeCode_EPUT_2018",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
-            }]
-        },
-        {   "id": "2",
+    "tasks": [{
+            "id": "1",
             "tasktype": "TASK",
-            "name": "LAC_E-Referral",
-            "description": "Send Looked After Child E-Referral Request to HA Providers",
-            "expirationtime": "day(4)",
-            "startbytime": "day(1)",
-            "completebytime": "day(3)",
+            "name": "LAC_Workflow_Opened",
+            "description": "Open Workflow for Looked After Child Identified to Council",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "",
+            "completebytime": "",
             "isskipable": false,
-            "potentialOwners": [{
-                "organizationalEntity": {
-                    "group": "LAC_Team"
-                }}
-            ],
             "completionBehavior": [{
-                "completion": {
-                    "condition": "output(LAC2^^TypeCode_EPUT_2018)"
+                    "completion": {
+                        "condition": "output(LAC1^^TypeCode_EPUT_2018)"
+                    }
+                },
+                {
+                    "completion": {
+                        "condition": "task(2)"
+                    }
                 }
-            }],
-            "input": [{
-                "name": "LAC_Identified",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "LAC1^^TypeCode_EPUT_2018",
-                "contenttype": "text",
-                "accesstype": "url"
-            }],
+            ],
             "output": [{
-                "name": "LAC_E-Referral",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "LAC2^^TypeCode_EPUT_2018",
+                "name": "LAC1^^TypeCode_EPUT_2018",
                 "contenttype": "application/pdf",
                 "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }]
         },
         {
-            "id": "3",
-            "tasktype": "NOTIFICATION",
-            "name": "LAC_Claimed",
-            "description": "Provider Claimed Health Assessment E-Referral",
-            "expirationtime": "day(4)",
-            "completebytime": "day(3)",
-            "isskipable": false,
-            "completionBehavior": [{
-                "completion": {
-                    "condition": "input(LAC_Claimed)"
-                }
-                },{
-                "completion": {
-                    "condition": "input(LAC3^^TypeCode_EPUT_2018)"
-                }
-            }],
-            "input": [{
-                "name": "LAC_Claimed",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },{
-                "name": "LAC3^^TypeCode_EPUT_2018",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
-            }
-            ]
-        },
-        {   "id": "4",
+            "id": "2",
             "tasktype": "TASK",
-            "name": "LAC_Paperwork_Sent",
-            "description": "Send LAC paperwork to IHA Provider",
-            "expirationtime": "day(4)",
+            "name": "Send_LAC_Paperwork",
+            "description": "LAC paperwork sent to IHA Provider",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "",
+            "startbytime": "day(2)",
             "completebytime": "day(3)",
             "isskipable": false,
-            "potentialOwners": [{
-                "organizationalEntity": {
-                    "group": "LAC_Team"
-                }}
-            ],
             "completionBehavior": [{
                 "completion": {
-                    "condition": "output(LAC4^^TypeCode_EPUT_2018 and task(5))"
+                    "condition": "task(3)"
                 }
-            }],
-            "input": [{
-                "name": "LAC_Claimed",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },{
-                "name": "LAC3^^TypeCode_EPUT_2018",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }],
             "output": [{
                 "name": "LAC4^^TypeCode_EPUT_2018",
@@ -137,53 +57,21 @@
             }]
         },
         {
-            "id": "5",
-            "tasktype": "NOTIFICATION",
-            "name": "Accept_Paperwork",
-            "description": "Provider Accepts LAC paperwork",
-            "expirationtime": "day(8)",
-            "startbytime": "day(4)",
+            "id": "3",
+            "tasktype": "TASK",
+            "name": "Provider_Accept_Reject_Paperwork",
+            "description": "Provider Accepts or Rejects LAC paperwork",
+            "owner": "Provider_Referrals",
+            "expirationtime": "day(14)",
+            "startbytime": "day(3)",
             "completebytime": "day(7)",
             "isskipable": false,
-            "potentialOwners": [{
-                "organizationalEntity": {
-                    "group": "LAC_Team"
-                }}
-            ],
             "completionBehavior": [{
-                "completion": {
-                    "condition": "output(Accept_Paperwork) and latest(Accept_Paperwork)"
-                }
-            },
-            {
                 "completion": {
                     "condition": "output(LAC5^^TypeCode_EPUT_2018) and latest(LAC5^^TypeCode_EPUT_2018)"
                 }
             }],
-            "possibleOutcomes": [{
-                "possibleOutcome": {
-                    "name": "ACCEPT"
-                }
-            },
-            {
-                "possibleOutcome": {
-                    "name": "REJECT"
-                }
-            }],
-            "input": [{
-                 "name": "LAC4^^TypeCode_EPUT_2018",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
-            }],
             "output": [{
-                    "name": "Accept_Paperwork",
-                    "contenttype": "text/plain",
-                    "accesstype": "MIME"
-                },{
-                    "name": "Reject_Paperwork",
-                    "contenttype": "text/plain",
-                    "accesstype": "MIME"
-                },{
                     "name": "LAC5^^TypeCode_EPUT_2018",
                     "contenttype": "application/pdf",
                     "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
@@ -196,80 +84,74 @@
             ]
         },
         {
-            "id": "6",
+            "id": "4",
             "tasktype": "TASK",
-            "name": "LAC_HA_Sent",
-            "description": "Provider Sends Health Assessment to Commissoner",
-            "expirationtime": "day(20)",
-            "startbytime": "day(9)",
-            "completebytime": "day(18)",
+            "name": "IHA_Scheduled",
+            "description": "Provider Schedules IHA Appointment",
+            "owner": "Provider_Referrals",
+            "expirationtime": "day(15)",
+            "startbytime": "day(7)",
+            "completebytime": "day(8)",
             "isskipable": false,
             "completionBehavior": [{
                 "completion": {
                     "condition": "output(LAC7^^TypeCode_EPUT_2018)"
                 }
             }],
-            "input": [{
-                "name": "Accept_Paperwork",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "LAC5^^TypeCode_EPUT_2018",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
-            }],
             "output": [{
-                "name": "LAC_HA_Sent",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-                },
-                {
                 "name": "LAC7^^TypeCode_EPUT_2018",
                 "contenttype": "application/pdf",
                 "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }]
         },
         {
-            "id": "7",
-            "tasktype": "NOTIFICATION",
-            "name": "LAC_HA_Accepted",
-            "description": "Commissoner Accepts HA",
-            "expirationtime": "day(20)",
-            "completebytime": "day(20)",
+            "id": "5",
+            "tasktype": "TASK",
+            "name": "IHA_Completed",
+            "description": "Provider Completed IHA Assessment",
+            "owner": "Provider_Referrals",
+            "expirationtime": "",
+            "startbytime": "day(8)",
+            "completebytime": "day(18)",
             "isskipable": false,
-            "potentialOwners": [{
-                "organizationalEntity": {
-                    "group": "LAC_Team"
-                }}
-            ],
             "completionBehavior": [{
-                "completion": {
-                    "condition": "output(LAC_HA_Accepted)"
-                }
-            },
-            {
                 "completion": {
                     "condition": "output(LAC8^^TypeCode_EPUT_2018)"
                 }
             }],
             "input": [{
-                "name": "LAC_HA_Sent",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-                },
-                {
                 "name": "LAC7^^TypeCode_EPUT_2018",
                 "contenttype": "application/pdf",
                 "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }],
             "output": [{
-                "name": "LAC_HA_Accepted",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
                 "name": "LAC8^^TypeCode_EPUT_2018",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }]
+        },
+        {
+            "id": "6",
+            "tasktype": "TASK",
+            "name": "LAC_Workflow_Completed",
+            "description": "Commissoner Acknowledged IHA Received",
+            "owner": "Commissioner_Referrals",
+            "expirationtime": "day(25)",
+            "startbytime": "day(19)",
+            "completebytime": "day(20)",
+            "isskipable": false,
+            "completionBehavior": [{
+                "completion": {
+                    "condition": "output(LAC9^^TypeCode_EPUT_2018)"
+                }
+            }],
+            "input": [{
+                "name": "LAC8^^TypeCode_EPUT_2018",
+                "contenttype": "application/pdf",
+                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+            }],
+            "output": [{
+                "name": "LAC9^^TypeCode_EPUT_2018",
                 "contenttype": "application/pdf",
                 "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }]

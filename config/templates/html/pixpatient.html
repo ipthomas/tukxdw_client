@@ -1,91 +1,97 @@
-{{define "pixpatient"}}{{template "header" .}} {{$pat := .PDQv3Response.Body.PRPAIN201306UV02.ControlActProcess.Subject.RegistrationEvent.Subject1.Patient}}
+{{define "pixpatient"}}
+{{template "header" .}} 
+{{$pat := .PDQv3Response.Body.PRPAIN201306UV02.ControlActProcess.Subject.RegistrationEvent.Subject1.Patient}}
 {{template "horizontalline"}}
-<div class="row">
-    <div class="col-sm-12">
-        <h6 style="color:blue;text-align:center">Patient Demographics and ID's</h6>
+{{$event := .}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-12">
+            <a href="#" onclick="togglePatient()"><i class="fa fa-bars">Toggle</i></a>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-sm-1">
+            <label style="color:blue;" for="givenname">Given</label>
+            <p id="givenname" name="givenname">{{$pat.PatientPerson.Name.Given}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="familyname">Family</label>
+            <p id="familyname" name="familyname">{{$pat.PatientPerson.Name.Family}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="dob">Birth Date</label>
+            <p id="dob" name="dob">{{$pat.PatientPerson.BirthTime}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="gender">Gender</label>
+            <p id="gender" name="gender">{{$pat.PatientPerson.AdministrativeGenderCode.Code}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="maritalStatusCode">Marital Status</label>
+            <p id="maritalStatusCode" name="maritalStatusCode">{{$pat.PatientPerson.MaritalStatusCode.Code}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="twin">Twin</label>
+            <p id="twin" name="twin">{{$pat.PatientPerson.MultipleBirthInd}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="telecom">Telcom</label>
+            {{range $pat.PatientPerson.Telecom}}
+            <p id="telecom" name="telecom">{{.Value}}</p>
+            {{end}}
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="updated">Last Updated</label>
+            <p id="updated" name="updated">{{$pat.EffectiveTime.Value}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <label style="color:blue;" for="address">Address</label>
+            <p id="address" name="address">{{$pat.PatientPerson.Addr.StreetAddressLine}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="city">City</label>
+            <p id="city" name="city">{{$pat.PatientPerson.Addr.City}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="state">State</label>
+            <p id="state" name="state">{{$pat.PatientPerson.Addr.State}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="zip">ZIP</label>
+            <p id="zip" name="zip">{{$pat.PatientPerson.Addr.PostalCode}}</p>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="deceased">Deceased</label>
+            <p id="deceased" name="deceased">{{$pat.PatientPerson.DeceasedInd}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="nat">Nat</label>
+            <p id="nat" name="nat">{{$pat.PatientPerson.AsCitizen.PoliticalNation.Code.Code}}</p>
+        </div>
+        <div class="col-sm-1">
+            <label style="color:blue;" for="birthplace">Birth Place</label>
+            <p id="birthplace" name="birthplace">{{$pat.PatientPerson.BirthPlace.Addr.City}}</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            <label style="color:blue;" for="pid">Patient ID</label>
+        </div>
+        <div class="col-sm-2">
+            <label style="color:blue;" for="idtype">ID Type</label>
+        </div>
+    </div>
+    {{range $pat.ID}}
+    <div class="row">
+        <div class="col-sm-2">
+            <p id="pid" name="pid">{{.Extension}}</p>
+        </div>
+        <div class="col-sm-2">
+            <p id="idtype" name="idtype">{{$event.GetMappedId .AssigningAuthorityName}}</p>
+        </div>
+    </div>
+    {{end}} 
 </div>
-<div class="row">
-    <div class="col-sm-1">
-        <label style="color:blue;" for="givenname">Given</label>
-        <p id="givenname" name="givenname">{{$pat.PatientPerson.Name.Given}}</p>
-    </div>
-    <div class="col-sm-1">
-        <label style="color:blue;" for="familyname">Family</label>
-        <p id="familyname" name="familyname">{{$pat.PatientPerson.Name.Family}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="dob">Birth Date</label>
-        <p id="dob" name="dob">{{$pat.PatientPerson.BirthTime}}</p>
-    </div>
-    <div class="col-sm-1">
-        <label style="color:blue;" for="gender">Gender</label>
-        <p id="gender" name="gender">{{$pat.PatientPerson.AdministrativeGenderCode.Code}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="maritalStatusCode">Marital Status</label>
-        <p id="maritalStatusCode" name="maritalStatusCode">{{$pat.PatientPerson.MaritalStatusCode.Code}}</p>
-    </div>
-    <div class="col-sm-1">
-        <label style="color:blue;" for="twin">Twin</label>
-        <p id="twin" name="twin">{{$pat.PatientPerson.MultipleBirthInd}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="telecom">Telcom</label>
-        {{range $pat.PatientPerson.Telecom}}
-        <p id="telecom" name="telecom">{{.Value}}</p>
-        {{end}}
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="updated">Last Updated</label>
-        <p id="updated" name="updated">{{$pat.EffectiveTime.Value}}</p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-2">
-        <label style="color:blue;" for="address">Address</label>
-        <p id="address" name="address">{{$pat.PatientPerson.Addr.StreetAddressLine}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="city">City</label>
-        <p id="city" name="city">{{$pat.PatientPerson.Addr.City}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="state">State</label>
-        <p id="state" name="state">{{$pat.PatientPerson.Addr.State}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="zip">ZIP</label>
-        <p id="zip" name="zip">{{$pat.PatientPerson.Addr.PostalCode}}</p>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="deceased">Deceased</label>
-        <p id="deceased" name="deceased">{{$pat.PatientPerson.DeceasedInd}}</p>
-    </div>
-    <div class="col-sm-1">
-        <label style="color:blue;" for="nat">Nat</label>
-        <p id="nat" name="nat">{{$pat.PatientPerson.AsCitizen.PoliticalNation.Code.Code}}</p>
-    </div>
-    <div class="col-sm-1">
-        <label style="color:blue;" for="birthplace">Birth Place</label>
-        <p id="birthplace" name="birthplace">{{$pat.PatientPerson.BirthPlace.Addr.City}}</p>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-2">
-        <label style="color:blue;" for="pid">Patient ID</label>
-    </div>
-    <div class="col-sm-2">
-        <label style="color:blue;" for="idtype">ID Type</label>
-    </div>
-</div>
-{{range $pat.ID}}
-<div class="row">
-    <div class="col-sm-2">
-        <p id="pid" name="pid">{{.Extension}}</p>
-    </div>
-    <div class="col-sm-2">
-        <p id="idtype" name="idtype">{{.AssigningAuthorityName}}</p>
-    </div>
-</div>
-{{end}} {{template "footer"}} {{end}}
+{{template "footer"}} {{end}}

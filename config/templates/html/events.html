@@ -1,4 +1,13 @@
-{{define "events"}} {{ template "header" .}}{{$url := .EventServices.EventService.EventUrl}}{{$usr := .EventServices.EventService.User}}{{$org := .EventServices.EventService.Org}}{{$role := .EventServices.EventService.Role}}{{$pw:=.Pathway}}{{$exp:=.Expression}}{{$top:=.Topic}}
+{{define "events"}} 
+{{ template "header" .}}
+{{$event := .}}
+{{$url := .EventServices.EventService.EventUrl}}
+{{$usr := .EventServices.EventService.User}}
+{{$org := .EventServices.EventService.Org}}
+{{$role := .EventServices.EventService.Role}}
+{{$pw:=.Pathway}}
+{{$exp:=.Expression}}
+{{$top:=.Topic}}
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
@@ -28,7 +37,7 @@
         </div>
         <div class="col-sm-2">
             <label style="color:blue" for="topic">Task</label>
-            <p id="topic" name="topic">{{mappedid .Topic}}</p>
+            <p id="topic" name="topic">{{$event.GetMappedId .Topic}}</p>
         </div>
         <div class="col-sm-2">
             <label style="color:blue" for="authors">Created By</label>

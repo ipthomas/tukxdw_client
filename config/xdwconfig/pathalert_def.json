@@ -1,10 +1,10 @@
 {
     "ref": "pathalert",
-    "name": "Pathology Alert Workflow",
+    "name": "Pathology Anomaly Workflow",
     "confidentialitycode": "Normal",
     "startbytime": "hour(1)",
     "completebytime": "day(2)",
-    "expirationtime": "day(2)",
+    "expirationtime": "day(3)",
     "completionBehavior": [{
         "completion": {
             "condition": "task(3)"
@@ -13,90 +13,60 @@
     "tasks": [
         {   "id": "1",
             "tasktype": "NOTIFICATION",
-            "name": "Path_Anomaly_Identified",
-            "description": "Notifyification of Pathology Result Anomaly",
-            "expirationtime": "day(1)",
-            "startbytime": "hour(1)",
-            "completebytime": "hour(2)",
+            "name": "Lab_Report",
+            "description": "Send Pathology Result Anomaly Alert for Claiming",
+            "expirationtime": "hour(8)",
+            "completebytime": "hour(1)",
             "isskipable": false,
             "completionBehavior": [{
                 "completion": {
-                    "condition": "output(Path_Anomaly_Identified)"
-                }},
-                {
-                "completion": {
-                    "condition": "output(Path1^^TypeCode_LPRES_2022)"
-                }}],
+                    "condition": "output(Lab_Report)"
+                }}
+            ],
             "output": [{
-                "name": "Path_Anomaly_Identified",
+                "name": "Lab_Report",
                 "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "Path1^^TypeCode_LPRES_2022",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+                "accesstype": "URL"
             }]
         },
         {   "id": "2",
             "tasktype": "Notification",
-            "name": "Path_Anomily_Claimed",
-            "description": "Pathology Result Anomaly Claimed",
-            "expirationtime": "day(1)",
-            "startbytime": "day(1)",
-            "completebytime": "day(1)",
+            "name": "Lab_Report_Claimed",
+            "description": "Claim Pathology Result Anomaly",
+            "expirationtime": "hour(8)",
+            "completebytime": "hour(4)",
             "isskipable": false,
             "completionBehavior": [{
                 "completion": {
-                    "condition": "output(LAC2^^TypeCode_EPUT_2018)"
+                    "condition": "output(Lab_Report_Claimed)"
                 }
             }],
             "input": [{
-                "name": "Path_Anomaly_Identified",
+                "name": "Lab_Report",
                 "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "Path1^^TypeCode_LPRES_2022",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+                "accesstype": "URL"
             }],
             "output": [{
-                "name": "Path_Anomaly_Claimed",
+                "name": "Lab_Report_Claimed",
                 "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },
-            {
-                "name": "Path2^^TypeCode_LPRES_2022",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
+                "accesstype": "URL"
             }]
         },
-        {
-            "id": "3",
-            "tasktype": "TASK",
-            "name": "Path_Results",
-            "description": "Provider Claimed Health Assessment E-Referral",
-            "expirationtime": "day(2)",
+        {   "id": "3",
+            "tasktype": "Task",
+            "name": "Lab_Result_Published",
+            "description": "Publish Lab Result for Pathology Anomaly",
+            "expirationtime": "day(3)",
             "completebytime": "day(2)",
             "isskipable": false,
             "completionBehavior": [{
                 "completion": {
-                    "condition": "output(Path3^^TypeCode_EPUT_2018)"
+                    "condition": "output(Lab_Result^^TypeCode_LPRES_2018)"
                 }
             }],
-            "input": [{
-                "name": "Path_Anomaly_Claimed",
-                "contenttype": "text/plain",
-                "accesstype": "MIME"
-            },{
-                "name": "Path2^^TypeCode_LPRES_2022",
-                "contenttype": "application/pdf",
-                "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
-            }],
             "output": [{
-                "name": "Path3^^TypeCode_LPRES_2022",
-                "contenttype": "application/pdf",
+                "name": "Lab_Result^^TypeCode_LPRES_2018",
+                "contenttype": "text/xml",
                 "accesstype": "urn:ihe:iti:xdw:2011:XDSregistered"
             }]
         }

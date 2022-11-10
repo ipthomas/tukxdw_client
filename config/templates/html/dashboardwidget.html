@@ -1,36 +1,24 @@
-{{define "dashboardwidget"}}{{template "header" .}}{{$url := .EventServices.EventService.EventUrl}}
+{{define "dashboardwidget"}}
+{{template "header" .}}
+{{$url := .EventServices.EventService.EventUrl}}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-sm-10">
-            <a href="{{$url}}?act=widget&task=spa&pathway={{.Pathway}}&nhs={{.NHSId}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}"><img class="img-fluid left-block" src="/nhs-essex-trust-logo.jpeg" /></a>
-        </div>
-        <div class="col-sm-1">
-            <img class="img-fluid center-block" src="/event-logo.png" />
-        </div>
-        <div class="col-sm-1">
+        <div class="col-sm-12">
+            <img class="img-fluid left-block" src="/nhs-essex-trust-logo.jpeg" /></a>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-11">
-            {{if ne .Pathway ""}}
-            <h1 style="color:darkblue;text-align: center;" class="center-block">Dashboard</h1>
-            <h4 style="color:darkblue;text-align: center;" class="center-block">{{mappedid .Pathway}}  Workflows</h4>
-            {{else}}
-            <h1 style="color:darkblue;text-align: center;" class="center-block">Dashboard</h1>
-            <h4 style="color:darkblue;text-align: center;" class="center-block">Regional Clinical Workflows</h4>
-            {{end}}
-        </div>
-        <div class="col-sm-1">
+        <div class="col-sm-12">
+            <h1 style="color:darkblue;text-align: center;" class="center-block">{{.GetMappedId .Pathway}} Dashboard </h1>
         </div>
     </div>
-    <hr></hr>
+    {{template "horizontalline"}}
     <div class="row text-center">
-        <div class="col-sm-2"></div>
         <div class="col-sm-2">
             <div class="counter">
                 <i class="fa fa-medkit fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.Total}}" data-speed="1500"></h2>
-                <a href="{{$url}}?act=widget&task=xdws&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
                     <p class="count-text">Total</p>
                 </a>
             </div>
@@ -39,21 +27,20 @@
             <div class="counter">
                 <i class="fa fa-user-md fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.InProgress}}" data-speed="1500"></h2>
-                <p class="count-text ">In Progress</p>
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=open&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                    <p class="count-text ">Open</p>
+                </a>
             </div>
         </div>
-
         <div class="col-sm-2">
             <div class="counter">
                 <i class="fa fa-thumbs-up fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.Complete}}" data-speed="1500"></h2>
-                <p class="count-text ">Completed</p>
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=closed&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                    <p class="count-text ">Closed</p>
+                </a>
             </div>
         </div>
-    </div>
-    <hr></hr>
-    <div class="row">
-        <div class="col-sm-2"></div>
         <div class="col-sm-2">
             <div class="counter">
                 <i class="fa fa-bullseye fa-2x"></i>
@@ -77,8 +64,12 @@
         </div>
     </div>
     <div id="dashboardItemDIV">
-        <iframe frameBorder="0" height="850" width="100%" id="dashboardItem" name="dashboardItem"></iframe>
+        <iframe scrolling="auto" margin="0" frameBorder="0" height="150px" width="100%" id="dashboardItem" name="dashboardItem" src="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}"></iframe>
     </div>
+    <div id="workflowItemDIV">
+        <iframe scrolling="auto" margin="0" frameBorder="0" height="500px" width="100%" id="workflowItem" name="workflowItem"></iframe>
+    </div>
+</body>
     <script>
         (function($) {
             $.fn.countTo = function(options) {
@@ -186,4 +177,5 @@
             window.location.reload();
         }
     </script>
-    {{template "footer" .}}{{end}}
+{{template "footer" .}}
+{{end}}

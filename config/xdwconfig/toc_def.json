@@ -5,7 +5,7 @@
     "completebytime": "day(5)",
     "completionBehavior": [{
         "completion": {
-            "condition": "task(6)"
+            "condition": "task(4)"
         }
     }],
     "tasks": [{
@@ -44,12 +44,12 @@
             "input": [{
                 "name": "TOC_Request",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }],
             "output": [{
                 "name": "TOC_Claimed",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }]
         },
         {
@@ -68,12 +68,12 @@
             "input": [{
                 "name": "TOC_Claimed",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }],
             "output": [{
                 "name": "TOC_Schedule",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }]
         },
         {
@@ -92,12 +92,12 @@
             "input": [{
                 "name": "TOC_Schedule",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }],
             "output": [{
                 "name": "Patient_Admitted",
                 "contenttype": "text/plain",
-                "accesstype": "URL"
+                "accesstype": "url"
             }]
         }
     ]

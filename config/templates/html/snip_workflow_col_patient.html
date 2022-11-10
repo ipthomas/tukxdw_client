@@ -1,5 +1,5 @@
 {{define "snip_workflow_col_patient"}}
-<h3 class="text-center" style="color: darkblue;">{{mappedid .Pathway}}</h3>
+<h3 class="text-center" style="color: darkblue;">{{.GetMappedId .Pathway}}</h3>
 <a href="#" onclick="togglePatient()">
     {{if eq .XDWWorkflowDocument.WorkflowStatus "COMPLETE"}}
     <h5 class="text-center" style="color: green;">{{.PatientDetails.GivenName}} {{.PatientDetails.FamilyName}}</h5>

@@ -1,11 +1,15 @@
-{{define "subscriptions"}} {{ template "header" .}}{{$url := .EventServices.EventService.EventUrl}}{{$event:= .}}
+{{define "subscriptions"}} 
+{{ template "header" .}}
+{{$url := .EventServices.EventService.EventUrl}}
+{{$event:= .}}
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
             <h4 style="color: blue; text-align:center">Event Service Broker Subscriptions</h3>
         </div>
     </div>
-    {{template "horizontalline"}} {{range $k,$v := .DBSubscriptions.Subscriptions}}
+    {{template "horizontalline"}} 
+    {{range $k,$v := .DBSubscriptions.Subscriptions}}
     {{ if ne $k 0 }}
     <div class="row">
         <div class="col-sm-2">
@@ -14,7 +18,7 @@
         </div>
         <div class="col-sm-2">
             <label for="expression">Pathway</label>
-            <p id="expression" name="expression">{{mappedid $v.Pathway}}</p>
+            <p id="expression" name="expression">{{$event.GetMappedId $v.Pathway}}</p>
         </div>
         <div class="col-sm-2">
             <label for="expression">Expression</label>
@@ -36,4 +40,6 @@
     {{end}}
     {{end}}
 </div>
-{{ template "footer"}} {{end}}
+</body>
+{{ template "footer"}} 
+{{end}}

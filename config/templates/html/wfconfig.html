@@ -1,14 +1,39 @@
-{{define "wfconfig"}}{{template "header"}}{{$url := .EventServices.EventService.EventUrl}}
+{{define "wfconfig"}}
+{{template "header"}}
+{{$url := .EventServices.EventService.EventUrl}}
 <div class="container-fluid">
-    <h3>{{.Op}} {{if eq .Task "get"}} Service {{end}} {{if eq .Task "getxdw"}} Pathway {{end}} {{if eq .Task "getmeta"}} XDS Meta {{end}}{{if eq .Task "gethtml"}} HTML Widget {{end}} Configuration</h3>
+    <h3>{{if eq .Task "get"}}
+         Service 
+        {{end}} 
+        {{if eq .Task "getxdw"}} 
+         Pathway 
+        {{end}} 
+        {{if eq .Task "getmeta"}}
+         XDS Meta 
+        {{end}}
+        {{if eq .Task "gethtml"}}
+         HTML Widget 
+        {{end}} 
+        {{if eq .Task "getworkflow"}}
+         Workflow  
+        {{end}} 
+        Configuration</h3>
     <form action="{{$url}}" target="iadmin">
         <div class="row">
             <input type="hidden" class="form-control" id="saml" name="saml" value={{.SAML}}>
-            <input type="hidden" class="form-control" id="act" name="act" value="{{.Act}}"> {{if eq .Task "get"}}
-            <input type="hidden" class="form-control" id="task" name="task" value="set"> {{end}} {{if eq .Task "getmeta"}}
-            <input type="hidden" class="form-control" id="task" name="task" value="setmeta"> {{end}}{{if eq .Task "getxdw"}}
-            <input type="hidden" class="form-control" id="task" name="task" value="setxdw"> {{end}}{{if eq .Task "gethtml"}}
-            <input type="hidden" class="form-control" id="task" name="task" value="sethtml"> {{end}}
+            <input type="hidden" class="form-control" id="act" name="act" value="{{.Act}}">
+            {{if eq .Task "get"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="set">
+            {{end}}
+            {{if eq .Task "getmeta"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="setmeta"> 
+            {{end}}
+            {{if eq .Task "getxdw"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="setxdw"> 
+            {{end}}
+            {{if eq .Task "gethtml"}}
+            <input type="hidden" class="form-control" id="task" name="task" value="sethtml"> 
+            {{end}}
             <input type="hidden" class="form-control" id="op" name="op" value="{{.Op}}">
             <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{.Pathway}}">
             <input type="hidden" class="form-control" id="user" name="user" value="{{.EventServices.EventService.User}}">
@@ -20,9 +45,19 @@
                 <hr></hr>
             </div>
         </div>
-        <textarea type="input" class="form-control" id="config" name="config" rows="25">{{.ConfigStr}}</textarea>
+        {{if ne .Task "getworkflow"}}
+            <textarea type="input" class="form-control" id="config" name="config" rows="25">{{.ConfigStr}}</textarea>
+        {{else}}
+            <textarea disabled type="input" class="form-control" id="config" name="config" rows="25">{{.ConfigStr}}</textarea>
+        {{end}}
         <p> </p>
-        <button type="submit" class="btn btn-primary sm-2">Update</button>
+        {{if ne .Task "getworkflow"}}
+            <button type="submit" class="btn btn-primary sm-2">Update</button>
+        {{else}}
+            <button disabled type="submit" class="btn btn-primary sm-2">Update</button>
+        {{end}}
     </form>
 </div>
-{{template "footer"}}{{end}}
+</body>
+{{template "footer"}}
+{{end}}

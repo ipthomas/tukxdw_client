@@ -1,4 +1,7 @@
-{{define "adminspawidget"}}{{$saml := .SAML}}{{$url:= .EventServices.EventService.EventUrl}}{{$nhsid:=.NHSId}}{{$usr:=.EventServices.EventService.User}}{{$org:=.EventServices.EventService.Org}}{{$role:=.EventServices.EventService.Role}}
+{{define "adminspawidget"}}
+{{$saml := .SAML}}
+{{$url:= .EventServices.EventService.EventUrl}}
+{{$nhsid:=.NHSId}}{{$usr:=.EventServices.EventService.User}}{{$org:=.EventServices.EventService.Org}}{{$role:=.EventServices.EventService.Role}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,7 +27,7 @@
         <nav id="sidebar">
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{.NHSId}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" style="text-align:center"
+                    <a href="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{.NHSId}}&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" style="text-align:center"
                         target="iadmin" onclick="togglesidebar()">Pathways Dashboard</a>
                 </li>
                 <hr></hr>
@@ -45,7 +48,15 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#configwidgetmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Widgets</a>
+                    <a href="#configxmlmsgmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Messages</a>
+                    <ul class="collapse list-unstyled" id="configxmlmsgmenu">
+                        {{range .EventServices.XMLMessages}}
+                        <li><a href="{{$url}}?act=services&task=getxml&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                        {{end}}
+                    </ul>
+                </li>
+                <li>
+                    <a href="#configwidgetmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure HTML</a>
                     <ul class="collapse list-unstyled" id="configwidgetmenu">
                         {{range .EventServices.HTMLWidgets}}
                         <li><a href="{{$url}}?act=services&task=gethtml&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
@@ -56,8 +67,23 @@
                     <a href="#configxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Pathways</a>
                     <ul class="collapse list-unstyled" id="configxdwmenu">
                         {{range .EventServices.WorkflowDefinitions}}
-                        <li><a href="{{$url}}?act=services&task=getxdw&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}} Workflow</a></li>
-                        <li><a href="{{$url}}?act=services&task=getmeta&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}} XDS Meta</a></li>
+                        <li><a href="{{$url}}?act=services&task=getxdw&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                        {{end}}
+                    </ul>
+                </li>
+                <li>
+                    <a href="#newxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Start New Workflow</a>
+                    <ul class="collapse list-unstyled" id="newxdwmenu">
+                        {{range .EventServices.WorkflowDefinitions}}
+                        <li><a href="{{$url}}?act=XDW_Creator&task=getworkflow&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}} Workflow</a></li>
+                        {{end}}
+                    </ul>
+                </li>
+                <li>
+                    <a href="#configxdsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure XDS Meta</a>
+                    <ul class="collapse list-unstyled" id="configxdsmenu">
+                        {{range .EventServices.WorkflowXDWMeta}}
+                        <li><a href="{{$url}}?act=services&task=getmeta&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
                         {{end}}
                     </ul>
                 </li>
@@ -66,12 +92,9 @@
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-
                     <button type="button" id="sidebarCollapse" class="btn btn-info">
-                        <i class="fas fa-align-left"></i> Toggle Sidebar
-                        
+                        <i class="fas fa-align-left"></i> Admin                       
                     </button>
-
                 </div>
             </nav>
         </div>

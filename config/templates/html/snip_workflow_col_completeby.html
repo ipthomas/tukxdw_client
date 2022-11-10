@@ -1,6 +1,6 @@
 {{define "snip_workflow_col_completeby"}}
-<label style="color: darkblue" for="completeby">Complete By</label> {{if overdue .}}
-<p style="color: red;" id="completeby" name="completeby">{{completiontime .}}</p>
+<label style="color: darkblue" for="completeby">Complete By</label> {{if .IsWorkflowOverdue}}
+<p style="color: red;" id="completeby" name="completeby">{{.CompletionTime}}</p>
 {{template "snip_workflow_col_elapsedtime" .}} {{else}}
-<p style="color: green;" id="completeby" name="completeby">{{completiontime .}}</p>
+<p style="color: green;" id="completeby" name="completeby">{{.CompletionTime}}</p>
 {{template "snip_workflow_col_elapsedtime" .}} {{end}} {{end}}

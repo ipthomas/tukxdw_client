@@ -1,0 +1,196 @@
+2022/11/03 10:26:11.733482 tukutil.go:139: -----------------------------------------------------------------------------------
+2022/11/03 10:26:11.733549 main.go:199: Loaded log file - ./logs/2022/1103.log
+2022/11/03 10:26:11.733590 tukdbint.go:233: No Database API URL provided. Opening DB Connection to mysql instance via DSN - root:rootPass@tcp(localhost:3306)/tuk?parseTime=true&timeout=60s&readTimeout=2s
+2022/11/03 10:26:11.733688 tukxdw.go:347: Creating New Workflow for Pathway pathalert NHS ID 9999999468
+2022/11/03 10:26:11.733712 tukxdw.go:358: Obtaining XDS Meta for Pathway pathalert
+2022/11/03 10:26:11.733809 tukdbint.go:917: Created Prepared Statement SELECT * FROM xdws WHERE name= ? AND isxdsmeta= ? - Values [pathalert_meta %!s(bool=true)]
+2022/11/03 10:26:11.748866 tukxdw.go:366: Loaded XDS Meta for Pathway pathalert
+2022/11/03 10:26:11.748956 tukdbint.go:917: Created Prepared Statement SELECT * FROM xdws WHERE name= ? AND isxdsmeta= ? - Values [pathalert %!s(bool=false)]
+2022/11/03 10:26:11.750192 tukxdw.go:373: Loaded XDW definition for Pathway pathalert
+2022/11/03 10:26:11.750246 tukxdw.go:390: Deprecating any current pathalert Workflow for NHS ID 9999999468
+2022/11/03 10:26:11.750277 tukdbint.go:917: Created Prepared Statement UPDATE workflows SET version = version + 1 WHERE xdw_key=? - Values [pathalert9999999468]
+2022/11/03 10:26:11.790311 tukxdw.go:396: Deprecating any current pathalert Workflow events for NHS ID 9999999468
+2022/11/03 10:26:11.790388 tukdbint.go:917: Created Prepared Statement UPDATE events SET version = version + 1 WHERE pathway=? AND nhsid=? - Values [pathalert 9999999468]
+2022/11/03 10:26:11.797253 tukdbint.go:917: Created Prepared Statement SELECT * FROM idmaps WHERE mid= ? - Values [lth]
+2022/11/03 10:26:11.797992 tukdbint.go:917: Created Prepared Statement INSERT INTO events (facilitycode, authors, nhsid, org, role, pathway, classcode, formatcode, user, version, docname, practicecode, comments, taskid, xdspid, xdsdocentryuid, repositoryuniqueid, topic, confcode, expression) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) - Values [path Clinical pbradley 9999999468 lth Clinical pathalert Workflow Management urn:ihe:iti:xdw:2011:workflowDoc pbradley %!s(int=0) PATHALERT-9999999468 Path-PS1 User pbradley from lth in the role of Clinical created new pathalert Workflow %!s(int=1) NA urn:ihe:iti:xdw:2013:workflowInstanceId ODD $XDSDocumentEntryTypeCode N Path_Anomaly_Identified]
+2022/11/03 10:26:11.806699 tukxdw.go:738: Created Event ID :  = 129
+2022/11/03 10:26:11.806764 tukxdw.go:444: Creating Workflow Task ID - 1 Name - Path_Anomaly_Identified
+2022/11/03 10:26:11.806788 tukxdw.go:464: Created Input Part - Path_Anomaly_Identified
+2022/11/03 10:26:11.806804 tukxdw.go:474: Created Output Part - PathResult^^TypeCode_LPRES_2022
+2022/11/03 10:26:11.806828 tukxdw.go:484: Set Workflow Task Event 1 create status to COMPLETE
+2022/11/03 10:26:11.806846 tukxdw.go:492: Created Workflow Document Event Set status to CREATED
+2022/11/03 10:26:11.806983 tukdbint.go:917: Created Prepared Statement INSERT INTO events (nhsid, user, pathway, version, docname, facilitycode, expression, practicecode, org, repositoryuniqueid, topic, confcode, formatcode, xdsdocentryuid, role, comments, taskid, classcode, authors, xdspid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) - Values [9999999468 pbradley pathalert %!s(int=0) PATHALERT-9999999468 path Path_Anomily_Claimed Path-PS1 lth ODD $XDSDocumentEntryTypeCode N urn:ihe:iti:xdw:2011:workflowDoc urn:ihe:iti:xdw:2013:workflowInstanceId Clinical User pbradley from lth in the role of Clinical created new pathalert Workflow %!s(int=2) Workflow Management Clinical pbradley NA]
+2022/11/03 10:26:11.808755 tukxdw.go:738: Created Event ID :  = 130
+2022/11/03 10:26:11.808813 tukxdw.go:444: Creating Workflow Task ID - 2 Name - Path_Anomily_Claimed
+2022/11/03 10:26:11.808835 tukxdw.go:464: Created Input Part - Path_Anomaly_Identified
+2022/11/03 10:26:11.808850 tukxdw.go:464: Created Input Part - PathResult^^TypeCode_LPRES_2022
+2022/11/03 10:26:11.808864 tukxdw.go:474: Created Output Part - Path_Anomaly_Claimed
+2022/11/03 10:26:11.808905 tukxdw.go:484: Set Workflow Task Event 2 create status to COMPLETE
+2022/11/03 10:26:11.808944 tukxdw.go:492: Created Workflow Document Event Set status to CREATED
+2022/11/03 10:26:11.809255 tukxdw.go:497: Created new PATHALERT Workflow for Patient 9999999468
+2022/11/03 10:26:11.809510 tukdbint.go:917: Created Prepared Statement INSERT INTO workflows (nhsid, xdw_key, xdw_uid, xdw_doc, xdw_def, version, published, pathway) VALUES (?, ?, ?, ?, ?, ?, ?, ?) - Values [9999999468 PATHALERT9999999468 1.2.40.0.13.1.1.3542466645.202211102611797.73265 <XDW.WorkflowDocument hl7="urn:hl7-org:v3" ws-ht="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803" xdw="urn:ihe:iti:xdw:2011" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="urn:ihe:iti:xdw:2011 XDW-2014-12-23.xsd">
+  <id root="urn:ihe:iti:xdw:2013:workflowInstanceId" extension="1.2.40.0.13.1.1.3542466645.202211102611797.73265" assigningAuthorityName="LTH"></id>
+  <effectiveTime value="2022-11-03T10:26:11.797891Z"></effectiveTime>
+  <confidentialityCode code="Normal"></confidentialityCode>
+  <patient>
+    <id root="2.16.840.1.113883.2.1.4.1" extension="9999999468" assigningAuthorityName="NHS"></id>
+  </patient>
+  <author>
+    <assignedAuthor>
+      <id root="2.16.840.1.113883.2.1.3.31.2.2.1.1.3.1.1" extension="LTH" assigningAuthorityName="2.16.840.1.113883.2.1.3.31.2.2.1.1.3.1.1"></id>
+      <assignedPerson>
+        <name>
+          <family>pbradley</family>
+          <prefix>Clinical</prefix>
+        </name>
+      </assignedPerson>
+    </assignedAuthor>
+  </author>
+  <workflowInstanceId>1.2.40.0.13.1.1.3542466645.202211102611797.73265^^^^urn:ihe:iti:xdw:2013:workflowInstanceId</workflowInstanceId>
+  <workflowDocumentSequenceNumber>1</workflowDocumentSequenceNumber>
+  <workflowStatus>OPEN</workflowStatus>
+  <workflowStatusHistory>
+    <documentEvent>
+      <eventTime>2022-11-03T10:26:11.797891Z</eventTime>
+      <eventType>create</eventType>
+      <taskEventIdentifier>1</taskEventIdentifier>
+      <author>Clinical - pbradley</author>
+      <previousStatus>create</previousStatus>
+      <actualStatus>CREATED</actualStatus>
+    </documentEvent>
+    <documentEvent>
+      <eventTime>2022-11-03T10:26:11.797891Z</eventTime>
+      <eventType>create</eventType>
+      <taskEventIdentifier>2</taskEventIdentifier>
+      <author>Clinical - pbradley</author>
+      <previousStatus>create</previousStatus>
+      <actualStatus>CREATED</actualStatus>
+    </documentEvent>
+  </workflowStatusHistory>
+  <workflowDefinitionReference>PATHALERT</workflowDefinitionReference>
+  <TaskList>
+    <XDWTask>
+      <taskData>
+        <taskDetails>
+          <id>1</id>
+          <taskType>NOTIFICATION</taskType>
+          <name>Path_Anomaly_Identified</name>
+          <status>CREATED</status>
+          <actualOwner></actualOwner>
+          <createdTime>2022-11-03T10:26:11.797891Z</createdTime>
+          <createdBy>Clinical pbradley</createdBy>
+          <activationtime></activationtime>
+          <lastModifiedTime>2022-11-03T10:26:11.797891Z</lastModifiedTime>
+          <renderingMethodExists>false</renderingMethodExists>
+        </taskDetails>
+        <description>Notifyification of Pathology Result Anomaly</description>
+        <input>
+          <part name="Path_Anomaly_Identified">
+            <attachmentInfo>
+              <identifier></identifier>
+              <name>Path_Anomaly_Identified</name>
+              <accessType>MIME</accessType>
+              <contentType>text/plain</contentType>
+              <contentCategory>http://www.iana.org/assignments/media-types</contentCategory>
+              <attachedTime></attachedTime>
+              <attachedBy></attachedBy>
+              <homeCommunityId></homeCommunityId>
+            </attachmentInfo>
+          </part>
+        </input>
+        <output>
+          <part name="PathResult^^TypeCode_LPRES_2022">
+            <attachmentInfo>
+              <identifier></identifier>
+              <name>PathResult^^TypeCode_LPRES_2022</name>
+              <accessType>urn:ihe:iti:xdw:2011:XDSregistered</accessType>
+              <contentType>application/pdf</contentType>
+              <contentCategory>http://www.iana.org/assignments/media-types</contentCategory>
+              <attachedTime></attachedTime>
+              <attachedBy></attachedBy>
+              <homeCommunityId></homeCommunityId>
+            </attachmentInfo>
+          </part>
+        </output>
+      </taskData>
+      <taskEventHistory>
+        <taskEvent>
+          <id>129</id>
+          <eventTime>2022-11-03T10:26:11.797891Z</eventTime>
+          <identifier>1</identifier>
+          <eventType>create</eventType>
+          <status>COMPLETE</status>
+        </taskEvent>
+      </taskEventHistory>
+    </XDWTask>
+    <XDWTask>
+      <taskData>
+        <taskDetails>
+          <id>2</id>
+          <taskType>Notification</taskType>
+          <name>Path_Anomily_Claimed</name>
+          <status>CREATED</status>
+          <actualOwner></actualOwner>
+          <createdTime>2022-11-03T10:26:11.797891Z</createdTime>
+          <createdBy>Clinical pbradley</createdBy>
+          <activationtime></activationtime>
+          <lastModifiedTime>2022-11-03T10:26:11.797891Z</lastModifiedTime>
+          <renderingMethodExists>false</renderingMethodExists>
+        </taskDetails>
+        <description>Pathology Result Anomaly Claimed</description>
+        <input>
+          <part name="Path_Anomaly_Identified">
+            <attachmentInfo>
+              <identifier></identifier>
+              <name>Path_Anomaly_Identified</name>
+              <accessType>MIME</accessType>
+              <contentType>text/plain</contentType>
+              <contentCategory>http://www.iana.org/assignments/media-types</contentCategory>
+              <attachedTime></attachedTime>
+              <attachedBy></attachedBy>
+              <homeCommunityId></homeCommunityId>
+            </attachmentInfo>
+          </part>
+        </input>
+        <input>
+          <part name="PathResult^^TypeCode_LPRES_2022">
+            <attachmentInfo>
+              <identifier></identifier>
+              <name>PathResult^^TypeCode_LPRES_2022</name>
+              <accessType>urn:ihe:iti:xdw:2011:XDSregistered</accessType>
+              <contentType>application/pdf</contentType>
+              <contentCategory>http://www.iana.org/assignments/media-types</contentCategory>
+              <attachedTime></attachedTime>
+              <attachedBy></attachedBy>
+              <homeCommunityId></homeCommunityId>
+            </attachmentInfo>
+          </part>
+        </input>
+        <output>
+          <part name="Path_Anomaly_Claimed">
+            <attachmentInfo>
+              <identifier></identifier>
+              <name>Path_Anomaly_Claimed</name>
+              <accessType>MIME</accessType>
+              <contentType>text/plain</contentType>
+              <contentCategory>http://www.iana.org/assignments/media-types</contentCategory>
+              <attachedTime></attachedTime>
+              <attachedBy></attachedBy>
+              <homeCommunityId></homeCommunityId>
+            </attachmentInfo>
+          </part>
+        </output>
+      </taskData>
+      <taskEventHistory>
+        <taskEvent>
+          <id>130</id>
+          <eventTime>2022-11-03T10:26:11.797891Z</eventTime>
+          <identifier>2</identifier>
+          <eventType>create</eventType>
+          <status>COMPLETE</status>
+        </taskEvent>
+      </taskEventHistory>
+    </XDWTask>
+  </TaskList>
+</XDW.WorkflowDocument> {"ref":"pathalert","name":"Pathology Alert Workflow","confidentialitycode":"Normal","startbytime":"hour(1)","completebytime":"day(1)","completionBehavior":[{"completion":{"condition":"task(2)"}}],"tasks":[{"id":"1","tasktype":"NOTIFICATION","name":"Path_Anomaly_Identified","description":"Notifyification of Pathology Result Anomaly","actualowner":"","expirationtime":"day(2)","startbytime":"hour(1)","completebytime":"day(1)","isskipable":false,"potentialOwners":null,"completionBehavior":[{"completion":{"condition":"input(Path_Anomaly_Identified)"}}],"input":[{"name":"Path_Anomaly_Identified","contenttype":"text/plain","accesstype":"MIME"}],"output":[{"name":"PathResult^^TypeCode_LPRES_2022","contenttype":"application/pdf","accesstype":"urn:ihe:iti:xdw:2011:XDSregistered"}]},{"id":"2","tasktype":"Notification","name":"Path_Anomily_Claimed","description":"Pathology Result Anomaly Claimed","actualowner":"","expirationtime":"day(2)","startbytime":"day(1)","completebytime":"day(1)","isskipable":false,"potentialOwners":null,"completionBehavior":[{"completion":{"condition":"output(Path_Anomaly_Claimed)"}}],"input":[{"name":"Path_Anomaly_Identified","contenttype":"text/plain","accesstype":"MIME"},{"name":"PathResult^^TypeCode_LPRES_2022","contenttype":"application/pdf","accesstype":"urn:ihe:iti:xdw:2011:XDSregistered"}],"output":[{"name":"Path_Anomaly_Claimed","contenttype":"text/plain","accesstype":"MIME"}]}]} %!s(int=0) %!s(bool=false) pathalert]
+2022/11/03 10:26:11.816518 tukxdw.go:705: Persisted Workflow Version 0 for Pathway pathalert NHS ID 9999999468

@@ -1,0 +1,145 @@
+{{define "workflowtasks"}}
+    {{$event := .}}
+    {{$nhsid := .NHSId}}
+    {{$url := .EventServices.EventService.EventUrl}}
+    {{$usr := .EventServices.EventService.User}}
+    {{$org := .EventServices.EventService.Org}}
+    {{$role := .EventServices.EventService.Role}}
+    {{$pw:=.Pathway}}
+    {{$exp:=.Expression}}
+    {{$top:=.Topic}}
+    {{template "header" .}} 
+        <div id="tasksDIV">
+            {{range $k,$t := .XDWWorkflowDocument.TaskList.XDWTask}}
+            {{$overdue := $event.IsTaskOverdue $t.TaskData.TaskDetails.ID}}
+                <div class="row">
+                    <div class="col-sm-1">
+                        <h5 style="color: blue;text-align: center;">Task {{.TaskData.TaskDetails.ID}}</h5>
+                    </div>
+                    <div class="col-sm-11">
+                        <h5 style="color: blue;">{{.TaskData.Description}}</h5>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-1">
+                        {{template "snip_workflow_task_col_status" $t}}
+                    </div>
+                    <div class="col-sm-1">
+                        <label style="text-align: center;color: blue" for="overdue">Overdue</label>
+                        {{if $overdue}}
+                        <p style="color: red;" id="overdue" name="overdue">YES</p>
+                        {{else}}
+                        <p style="color: green;" id="overdue" name="overdue">NO</p>
+                        {{end}}
+                    </div>
+                    <div class="col-sm-2">
+                        <label style="text-align: center;color: blue" for="completeby">Complete By</label> 
+                        {{if $overdue}}
+                        <p style="color: red;" id="completeby" name="completeby">{{$event.TaskCompleteByTimeString $t.TaskData.TaskDetails.ID}}</p>
+                        {{else}}
+                        <p style="color: green;" id="completeby" name="completeby">{{$event.TaskCompleteByTimeString $t.TaskData.TaskDetails.ID}}</p>
+                        {{end}}
+                    </div>
+                    <div class="col-sm-3">
+                        <label style="text-align: center;color: blue">
+                        {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                        Completed On
+                        {{else}}
+                        Last Update
+                        {{end}}
+                        </label>
+                        {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                            <p style="color: green;">{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                        {{else}}
+                            <p>{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                        {{end}}
+                    </div>
+                </div>
+                {{template "horizontalline"}}
+                {{if $t.TaskData.Input}} 
+                    {{range $t.TaskData.Input}}
+                        <div class="row">
+                            {{if $event.IsBrokerExpression .Part.AttachmentInfo.Name}}
+                                <div class="col-sm-8">
+                                    {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                        <p id="inputexpression" name="inputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} Actioned By {{.Part.AttachmentInfo.AttachedBy}} On {{.Part.AttachmentInfo.AttachedTime}}</p>
+                                    {{else}}
+                                        <label style="color: darkblue;" for="inputexpression"><i class="fa-solid fa-envelope-open"></i> Waiting for {{.Part.AttachmentInfo.Name}} to be Published</label>
+                                    {{end}}
+                                </div>
+                            {{else}} 
+                                <div class="col-sm-8">
+                                    {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                        <p id="inputexpression" name="inputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} is Actioned</p>
+                                        <textarea disabled type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$event.TaskNotes $t.TaskData.TaskDetails.ID}}</textarea>
+                                    {{else}} 
+                                        <form action="{{$url}}" target="workflowItem">
+                                            <input type="hidden" class="form-control" id="taskid" name="taskid" value={{$t.TaskData.TaskDetails.ID}}>
+                                            <input type="hidden" class="form-control" id="vers" name="vers" value={{$event.Vers}}>
+                                            <input type="hidden" class="form-control" id="saml" name="saml" value={{$event.SAML}}>
+                                            <input type="hidden" class="form-control" id="act" name="act" value="events">
+                                            <input type="hidden" class="form-control" id="task" name="task" value="create">
+                                            <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{$event.Pathway}}">
+                                            <input type="hidden" class="form-control" id="nhs" name="nhs" value="{{$event.NHSId}}">
+                                            <input type="hidden" class="form-control" id="user" name="user" value="{{$event.EventServices.EventService.User}}">
+                                            <input type="hidden" class="form-control" id="org" name="org" value="{{$event.EventServices.EventService.Org}}">
+                                            <input type="hidden" class="form-control" id="role" name="role" value="{{$event.EventServices.EventService.Role}}">
+                                            <input type="hidden" class="form-control" id="topic" name="topic" value="addComment">
+                                            <input type="hidden" class="form-control" id="expression" name="expression" value="{{.Part.AttachmentInfo.Name}}"> 
+                                            <button type="submit" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-person-circle-check"></i> Create Event - {{.Part.AttachmentInfo.Name}} </button>
+                                            <textarea type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$event.TaskNotes $t.TaskData.TaskDetails.ID}}</textarea> 
+                                        </form>
+                                        </br>
+                                    {{end}}
+                                </div>
+                            {{end}}
+                        </div>
+                    {{end}}
+                {{end}}
+                </br>
+                {{if $t.TaskData.Output}}
+                    {{range $t.TaskData.Output}}
+                        <div class="row">
+                            {{if $event.IsBrokerExpression .Part.AttachmentInfo.Name}}
+                                <div class="col-sm-8">
+                                    {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                        <p id="outputexpression" name="outputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} Actioned By {{.Part.AttachmentInfo.AttachedBy}} On {{.Part.AttachmentInfo.AttachedTime}}</p>
+                                    {{else}}
+                                        <label style="color: blue;" for="outputexpression"><i class="fa-solid fa-envelope-open"></i> Waiting for {{.Part.AttachmentInfo.Name}} to be Published</label>
+                                    {{end}}
+                                </div>
+                            {{else}}
+                                <div class="col-sm-8">
+                                    {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                        <p id="inputexpression" name="outputexpression" style="color:darkgreen">{{.Part.AttachmentInfo.Name}} is Actioned</p>
+                                        <textarea disabled type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$event.TaskNotes $t.TaskData.TaskDetails.ID}}</textarea>
+                                    {{else}} 
+                                        <form action="{{$url}}" target="workflowItem">
+                                            <input type="hidden" class="form-control" id="taskid" name="taskid" value={{$t.TaskData.TaskDetails.ID}}>
+                                            <input type="hidden" class="form-control" id="vers" name="vers" value={{$event.Vers}}>
+                                            <input type="hidden" class="form-control" id="saml" name="saml" value={{$event.SAML}}>
+                                            <input type="hidden" class="form-control" id="act" name="act" value="events">
+                                            <input type="hidden" class="form-control" id="task" name="task" value="create">
+                                            <input type="hidden" class="form-control" id="pathway" name="pathway" value="{{$event.Pathway}}">
+                                            <input type="hidden" class="form-control" id="nhs" name="nhs" value="{{$event.NHSId}}">
+                                            <input type="hidden" class="form-control" id="user" name="user" value="{{$event.EventServices.EventService.User}}">
+                                            <input type="hidden" class="form-control" id="org" name="org" value="{{$event.EventServices.EventService.Org}}">
+                                            <input type="hidden" class="form-control" id="role" name="role" value="{{$event.EventServices.EventService.Role}}">
+                                            <input type="hidden" class="form-control" id="topic" name="topic" value="addComment">
+                                            <input type="hidden" class="form-control" id="expression" name="expression" value="{{.Part.AttachmentInfo.Name}}">
+                                            <button type="submit" class="btn btn-outline-primary btn-sm"><i class="fa-solid fa-person-circle-check"></i> Create Event - {{.Part.AttachmentInfo.Name}} </button>
+                                            <textarea type="text" class="form-control" aria-label="Small" aria-describedby="inputGroup-sizing-sm" name="notes">{{$event.TaskNotes $t.TaskData.TaskDetails.ID}}</textarea>
+                                        </form>
+                                        </br>
+                                    {{end}}
+                                </div>
+                            {{end}}
+                        </div>
+                    {{end}}
+                {{end}}
+            {{template "horizontalline"}}
+            {{end}}
+        </div>
+    </body>
+    {{template "footer"}}
+{{end}}

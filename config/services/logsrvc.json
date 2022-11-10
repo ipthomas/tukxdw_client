@@ -1,0 +1,5 @@
+{
+    "id": "logsrvc",
+    "enabled": true,
+    "filespath": "logs"
+}

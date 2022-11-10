@@ -1,0 +1,9 @@
+{
+    "id": "dbsrvc",
+    "user": "root",
+    "password": "rootPass",
+    "host": "localhost",
+    "port": 3306,
+    "db": "tuk",
+    "dburl": ""
+}

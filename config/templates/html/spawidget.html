@@ -1,4 +1,11 @@
-{{define "spawidget"}}{{$url:= .EventServices.EventService.EventUrl}}{{$pwy:= .Pathway}}{{$nhsid:=.NHSId}}{{$usr:=.EventServices.EventService.User}}{{$org:=.EventServices.EventService.Org}}{{$role:=.EventServices.EventService.Role}}{{$event := .}}
+{{define "spawidget"}}
+{{$url:= .EventServices.EventService.EventUrl}}
+{{$pwy:= .Pathway}}
+{{$nhsid:=.NHSId}}
+{{$usr:=.EventServices.EventService.User}}
+{{$org:=.EventServices.EventService.Org}}
+{{$role:=.EventServices.EventService.Role}}
+{{$event := .}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -24,25 +31,34 @@
         <nav id="sidebar">
             <ul class="list-unstyled components">
                 <li>
-                    <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">{{if eq .Pathway ""}}Select{{else}}Switch{{end}} Pathway</a>
+                    <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDW Consumer</a>
                     <ul class="collapse list-unstyled" id="pathwaymenu">
-                        {{range .EventServices.Pathways}}
-                        <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=xdws&pathway={{.Name}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$event.SAML}}" target="dashboardItem">{{mappedid .Name}}</a></li>
+                        {{range .EventServices.ActivePathways}}
+                            <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">{{$event.GetMappedId .}}</a></li>
                         {{end}}
                     </ul>
                 </li>
-                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=spa&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$event.SAML}}">ICS Dashboard</a></li>
+                 <li>
+                    <a href="#newxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDW Creator</a>
+                    <ul class="collapse list-unstyled" id="newxdwmenu">
+                        {{range .EventServices.WorkflowDefinitions}}
+                            <li><a href="{{$url}}?act=XDW_Creator&task=getworkflow&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent" onclick="togglesidebar()">{{.}} Workflow</a></li>
+                        {{end}}
+                    </ul>
+                </li>
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Dashboard</a></li>
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=admin&vers=-1&op=600000&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Admin</a></li>
             </ul>
         </nav>
         <div id="content">
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <div class="container-fluid">
-                    <button type="button" id="sidebarCollapse" class="btn btn-outline-primary btn-sm">Toggle Sidebar</button>
+                    <button type="button" id="sidebarCollapse" class="btn btn-outline-primary btn-sm"><i class="fa fa-bars"></i></button>
                 </div>
             </nav>
         </div>
-        <div class="col-sm-12">
-            <iframe onload="window.top.scrollTo(0,0);" frameborder="0" style="width:100%;height: 100%;" name="spacontent" title="spacontent" src="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{$nhsid}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{$event.SAML}}"></iframe>
+         <div class="col-sm-12">
+            <iframe onload="window.top.scrollTo(0,0);" width="100%" height="100%" frameborder="0" name="spacontent" title="spacontent" id="spacontent" src="{{$url}}?act=widget&task=dashboard&pathway={{.Pathway}}&vers=-1&op=600000&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{$event.SAML}}"></iframe>
         </div>
     </div>
 </body>
@@ -55,6 +71,7 @@
         $('#sidebarCollapse').on('click', function() {
             $('#sidebar').toggleClass('active');
         });
+        togglesidebar()
     });
 </script>
 <script>
