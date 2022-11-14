@@ -113,6 +113,7 @@ type WorkflowDefinition struct {
 	Confidentialitycode string `json:"confidentialitycode"`
 	StartByTime         string `json:"startbytime"`
 	CompleteByTime      string `json:"completebytime"`
+	ExpirationTime      string `json:"expirationtime"`
 	CompletionBehavior  []struct {
 		Completion struct {
 			Condition string `json:"condition"`
@@ -870,10 +871,11 @@ func GetTaskNotes(pwy string, nhsid string, taskid int, ver int) string {
 	return tukdbint.GetTaskNotes(pwy, nhsid, taskid, ver)
 }
 func (i *Transaction) IsTaskOverdue() bool {
+	log.Printf("Checking if Workflow %s Task %v is overdue", i.Pathway, i.Task_ID)
 	completionDate := i.GetTaskCompleteByDate()
 	log.Printf("Task complete by time %s", completionDate)
 	if time.Now().Local().Before(completionDate) {
-		log.Printf("Task %v is NOT overdue", i.Task_ID)
+		log.Printf("Time Now is before Task Complete by date. Task %v is NOT overdue", i.Task_ID)
 		return false
 	}
 	if i.XDWDocument.TaskList.XDWTask[i.Task_ID-1].TaskData.TaskDetails.Status == tukcnst.COMPLETE {
@@ -1060,14 +1062,25 @@ func (i *Transaction) newEventID() int64 {
 }
 func (i *Transaction) setIsWorkflowOverdueState() bool {
 	if i.XDWDefinition.CompleteByTime != "" {
-		completionDate := i.GetWorkflowCompleteByDate()
-		if time.Now().After(completionDate) {
-			if i.XDWDocument.WorkflowStatus == tukcnst.COMPLETE {
+		completebyDate := i.GetWorkflowCompleteByDate()
+		log.Printf("Workflow Complete By Date %s", completebyDate.String())
+		if time.Now().After(completebyDate) {
+			log.Printf("Time Now is after Workflow Complete By Date %s", completebyDate.String())
+			if i.XDWDocument.WorkflowStatus == tukcnst.CLOSED {
+				log.Printf("Workflow is Complete, Obtaining latest workflow event time")
 				i.setWorkflowLatestEventTime()
-				return i.XDWState.LatestWorkflowEventTime.After(completionDate)
+				log.Printf("Workflow Latest Event Time %s. Workflow Target Met = %v", i.XDWState.LatestWorkflowEventTime.String(), i.XDWState.LatestWorkflowEventTime.After(completebyDate))
+				return i.XDWState.LatestWorkflowEventTime.After(completebyDate)
+			} else {
+				log.Printf("Workflow is not Complete. Complete By Date is %s Workflow Target not met", completebyDate.String())
+				return false
 			}
+		} else {
+			log.Printf("Time Now is before Workflow Complete By Date %s. Workflow is not overdue", completebyDate.String())
+			return false
 		}
 	}
+	log.Printf("Workflow definition does not specify a Complete By Time. Workflow is not overdue")
 	return false
 }
 func (i *Transaction) GetWorkflowCompleteByDate() time.Time {
@@ -1381,41 +1394,53 @@ func (i *Transaction) SetDashboardState() error {
 	i.Dashboard.Total = i.Workflows.Count
 	for _, wf := range i.Workflows.Workflows {
 		if len(wf.XDW_Doc) > 0 {
-			if i.XDWVersion == -1 || wf.Version == i.XDWVersion {
-				if err := xml.Unmarshal([]byte(wf.XDW_Doc), &i.XDWDocument); err != nil {
-					log.Println(err.Error())
-					return err
-				}
-				log.Printf("%s Workflow Status is %s", wf.XDW_Key, i.XDWDocument.WorkflowStatus)
-				if err := json.Unmarshal([]byte(wf.XDW_Def), &i.XDWDefinition); err != nil {
-					log.Println(err.Error())
-					return err
-				}
-				if i.XDWDocument.WorkflowStatus == tukcnst.OPEN || i.XDWDocument.WorkflowStatus == tukcnst.IN_PROGRESS {
-					i.OpenWorkflows.Workflows = append(i.OpenWorkflows.Workflows, wf)
-					i.OpenWorkflows.Count = i.OpenWorkflows.Count + 1
-					i.Dashboard.InProgress = i.Dashboard.InProgress + 1
-				} else {
-					i.ClosedWorkflows.Workflows = append(i.ClosedWorkflows.Workflows, wf)
-					i.ClosedWorkflows.Count = i.ClosedWorkflows.Count + 1
-					i.Dashboard.Complete = i.Dashboard.Complete + 1
-				}
+			if err := xml.Unmarshal([]byte(wf.XDW_Doc), &i.XDWDocument); err != nil {
+				log.Println(err.Error())
+				return err
+			}
+			log.Printf("%s Workflow Status is %s", wf.XDW_Key, i.XDWDocument.WorkflowStatus)
+			if err := json.Unmarshal([]byte(wf.XDW_Def), &i.XDWDefinition); err != nil {
+				log.Println(err.Error())
+				return err
+			}
+			if i.XDWDocument.WorkflowStatus == tukcnst.OPEN {
+				i.OpenWorkflows.Workflows = append(i.OpenWorkflows.Workflows, wf)
+				i.OpenWorkflows.Count = i.OpenWorkflows.Count + 1
+				i.Dashboard.InProgress = i.Dashboard.InProgress + 1
+			} else {
+				i.ClosedWorkflows.Workflows = append(i.ClosedWorkflows.Workflows, wf)
+				i.ClosedWorkflows.Count = i.ClosedWorkflows.Count + 1
+				i.Dashboard.Complete = i.Dashboard.Complete + 1
+			}
 
-				if i.setIsWorkflowOverdueState() {
-					i.OverdueWorkflows.Workflows = append(i.OverdueWorkflows.Workflows, wf)
-					i.OverdueWorkflows.Count = i.OverdueWorkflows.Count + 1
-					i.Dashboard.TargetMissed = i.Dashboard.TargetMissed + 1
-				} else {
-					if i.XDWDocument.WorkflowStatus == tukcnst.CLOSED {
-						i.TargetMetWorkflows.Workflows = append(i.TargetMetWorkflows.Workflows, wf)
-						i.TargetMetWorkflows.Count = i.TargetMetWorkflows.Count + 1
-						i.Dashboard.TargetMet = i.Dashboard.TargetMet + 1
-					}
+			if i.setIsWorkflowOverdueState() {
+				i.OverdueWorkflows.Workflows = append(i.OverdueWorkflows.Workflows, wf)
+				i.OverdueWorkflows.Count = i.OverdueWorkflows.Count + 1
+				i.Dashboard.TargetMissed = i.Dashboard.TargetMissed + 1
+			} else {
+				if i.XDWDocument.WorkflowStatus == tukcnst.CLOSED {
+					i.TargetMetWorkflows.Workflows = append(i.TargetMetWorkflows.Workflows, wf)
+					i.TargetMetWorkflows.Count = i.TargetMetWorkflows.Count + 1
+					i.Dashboard.TargetMet = i.Dashboard.TargetMet + 1
 				}
+			}
+			if i.XDWDocument.WorkflowStatus == tukcnst.OPEN && i.IsWorkflowEscalated() {
+				i.EscalteWorkflows.Workflows = append(i.EscalteWorkflows.Workflows, wf)
+				i.EscalteWorkflows.Count = i.EscalteWorkflows.Count + 1
+				i.Dashboard.Escalated = i.Dashboard.Escalated + 1
 			}
 		}
 	}
 	return nil
+}
+func (i *Transaction) IsWorkflowEscalated() bool {
+	if i.XDWDefinition.ExpirationTime != "" {
+		escalatedate := tukutil.OHT_FutureDate(tukutil.GetTimeFromString(i.XDWDocument.EffectiveTime.Value), i.XDWDefinition.ExpirationTime)
+		log.Printf("Workflow Start Time %s Worklow Escalate Time %s Workflow Escaleted = %v", i.XDWDocument.EffectiveTime.Value, escalatedate.String(), time.Now().After(escalatedate))
+		return time.Now().After(escalatedate)
+	}
+	log.Println("No Escalate time defined for Workflow")
+	return false
 }
 
 // XDW Admin functions
