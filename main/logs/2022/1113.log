@@ -1,0 +1,10 @@
+2022/11/13 09:53:11.858230 tukutil.go:140: -----------------------------------------------------------------------------------
+2022/11/13 09:53:11.858283 main.go:199: Loaded log file - ./logs/2022/1113.log
+2022/11/13 09:53:11.858319 tukdbint.go:235: No Database API URL provided. Opening DB Connection to mysql instance via DSN - root:rootPass@tcp(localhost:3306)/tuk?parseTime=true&timeout=60s&readTimeout=2s
+2022/11/13 09:53:11.858432 tukutil.go:398: open ./config/templates/xml/: no such file or directory
+2022/11/13 09:53:11.858454 tukutil.go:398: open ./config/templates/html/: no such file or directory
+2022/11/13 09:54:43.019584 tukutil.go:140: -----------------------------------------------------------------------------------
+2022/11/13 09:54:43.019652 main.go:199: Loaded log file - ./logs/2022/1113.log
+2022/11/13 09:54:43.019692 tukdbint.go:235: No Database API URL provided. Opening DB Connection to mysql instance via DSN - root:rootPass@tcp(localhost:3306)/tuk?parseTime=true&timeout=60s&readTimeout=2s
+2022/11/13 09:54:43.019792 tukutil.go:398: open ./config/templates/xml/: no such file or directory
+2022/11/13 09:54:43.019814 tukutil.go:398: open ./config/templates/html/: no such file or directory

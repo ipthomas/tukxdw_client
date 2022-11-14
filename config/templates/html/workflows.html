@@ -9,49 +9,45 @@
 {{$nhsid := .NHSId}}
 {{$event := .}}
 <div class="container-fluid">
+    {{template "horizontalline"}}
     <div class="row">
         <div class="col-sm-12">
-            <hr></hr>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <h3 style="text-align:center;color:darkblue">{{.GetMappedId $pw}} Workflows {{$nhsid}}</h3>
+            <h3 style="text-align:center;color:darkblue">{{len .XDWDocuments}} {{.Status}} {{.GetMappedId $pw}}{{$nhsid}} Workflows</h3>
         </div>
     </div>
     {{range .XDWDocuments}}
     <div class="row">
         <div class="col-sm-1">
-            <label style="color:blue" for="nhsid">NHS ID</label>
+            <label style="color:darkblue" for="nhsid">NHS ID</label>
             <p id="nhsid" name="nhsid">{{.NHSId}}</p>
         </div>
        <div class="col-sm-2">
-            <label style="color:blue" for="pwy">Pathway</label>
+            <label style="color:darkblue" for="pwy">Pathway</label>
             <p id="pwy" name="pwy">{{$event.GetMappedId .Pathway}}</p>
         </div>
          <div class="col-sm-2">
-            <label style="color:blue" for="created">Opened</label>
+            <label style="color:darkblue" for="created">Opened</label>
             <p id="created" name="created">{{.Created}}</p>
         </div>
         <div class="col-sm-2">
-            <label style="color:blue" for="xdwkey">XDW Key</label>
+            <label style="color:darkblue" for="xdwkey">XDW Key</label>
             <p id="xdwkey" name="xdwkey">{{.XDW_Key}}</p>
         </div>
         <div class="col-sm-1">
-            <label style="color:blue" for="status">Status</label>
+            <label style="color:darkblue" for="status">Status</label>
             <p id="status" name="status">{{.Status}}</p>
         </div>
         <div class="col-sm-1">
-            <label style="color:blue" for="published">Published</label>
+            <label style="color:darkblue" for="published">Published</label>
             <p id="published" name="published">{{.Published}}</p>
         </div>
         <div class="col-sm-1">
-            <label style="color:blue" for="version">Version</label>
+            <label style="color:darkblue" for="version">Version</label>
             <a href="{{$url}}?act=widget&task=xdw&pathway={{.Pathway}}&nhs={{.NHSId}}&vers={{.Version}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="workflowItem"><p id="version" name="version">{{.Version}}</p></a>
         </div>
         {{if eq .Status "CLOSED"}}
         <div class="col-sm-2">
-            <label style="color:blue" for="duration">Workflow Duration</label>
+            <label style="color:darkblue" for="duration">Workflow Duration</label>
             <p id="version" name="version">{{$event.ElapsedTime .}}</p></a>
         </div>
         {{end}}

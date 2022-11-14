@@ -18,7 +18,7 @@
             <div class="counter">
                 <i class="fa fa-medkit fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.Total}}" data-speed="1500"></h2>
-                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
                     <p class="count-text">Total</p>
                 </a>
             </div>
@@ -27,7 +27,7 @@
             <div class="counter">
                 <i class="fa fa-user-md fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.InProgress}}" data-speed="1500"></h2>
-                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=open&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=open&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
                     <p class="count-text ">Open</p>
                 </a>
             </div>
@@ -36,7 +36,7 @@
             <div class="counter">
                 <i class="fa fa-thumbs-up fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.Complete}}" data-speed="1500"></h2>
-                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=closed&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=closed&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
                     <p class="count-text ">Closed</p>
                 </a>
             </div>
@@ -45,21 +45,27 @@
             <div class="counter">
                 <i class="fa fa-bullseye fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.TargetMet}}" data-speed="1500"></h2>
-                <p class="count-text ">Target Met</p>
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=met&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                    <p class="count-text ">Target Met</p>
+                </a>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="counter">
                 <i class="fa fa-bell fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.TargetMissed}}" data-speed="1500"></h2>
-                <p class="count-text ">Target Missed</p>
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=missed&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                    <p class="count-text ">Target Missed</p>
+                </a>
             </div>
         </div>
         <div class="col-sm-2">
             <div class="counter">
                 <i class="fa fa-bullhorn fa-2x"></i>
                 <h2 class="timer count-title count-number" data-to="{{.Dashboard.Escalated}}" data-speed="1500"></h2>
-                <p class="count-text ">Require Escalation</p>
+                <a href="{{$url}}?act=widget&task=xdws&pathway={{.Pathway}}&status=escalated&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="dashboardItem">
+                    <p class="count-text ">Require Escalation</p>
+                </a>
             </div>
         </div>
     </div>

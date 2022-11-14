@@ -28,31 +28,41 @@
                         </a>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h5 class="timeline-title">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h5>
+                                <h5 class="timeline-title" style="color:darkblue">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h5>
                             </div>
                             <div class="timeline-body">
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label>Task Duration</label>
+                                        <label style="color:darkblue">Task Duration</label>
                                         <p>{{$event.TaskDuration $t.TaskData.TaskDetails.ID}}</p>                               
                                     </div>
                                     <div class="col-sm-6">
-                                        <label>Current Owner</label>
+                                        <label style="color:darkblue">Current Owner</label>
                                         <p>{{$t.TaskData.TaskDetails.ActualOwner}}</p>                            
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-6">
-                                        <label>Activation Time</label>
+                                        <label style="color:darkblue">Activation Time</label>
                                         <p>{{$t.TaskData.TaskDetails.ActivationTime}}</p>
                                     </div>
                                     <div class="col-sm-6">
                                         {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
-                                            <label>Completed On</label>
+                                            <label style="color:darkblue">Completed On</label>
                                         {{else}}
-                                            <label>Updated</label>
+                                            <label style="color:darkblue">Updated</label>
                                         {{end}}
                                         <p>{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label style="color:darkblue">Status</label>
+                                        <p>{{$t.TaskData.TaskDetails.Status}}</p>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label style="color:darkblue">Task Type</label>
+                                        <p>{{$t.TaskData.TaskDetails.TaskType}}</p>
                                     </div>
                                 </div>
                             </div>

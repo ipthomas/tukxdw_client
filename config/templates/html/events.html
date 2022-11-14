@@ -1,79 +1,49 @@
 {{define "events"}} 
-{{ template "header" .}}
-{{$event := .}}
-{{$url := .EventServices.EventService.EventUrl}}
-{{$usr := .EventServices.EventService.User}}
-{{$org := .EventServices.EventService.Org}}
-{{$role := .EventServices.EventService.Role}}
-{{$pw:=.Pathway}}
-{{$exp:=.Expression}}
-{{$top:=.Topic}}
+{{template "header" .}}
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-12">
-            <hr></hr>
+            <h3 style="text-align:center;color:darkblue">{{.Pathway}} {{len .DBEvents}} Events</h3>
         </div>
     </div>
-    <div class="row">
-        <div class="col-sm-10">
-            {{if eq (len .DBEvents.Events) 1}}
-            <h3 style="text-align:center;color:darkblue">{{len .DBEvents.Events }} Notification</h3>
-            {{end}} {{if ne (len .DBEvents.Events) 1}}
-            <h3 style="text-align:center;color:darkblue">{{len .DBEvents.Events }} Notifications</h3>
-            {{end}}
+    {{range .DBEvents}}
+        {{if ne .Id 0}}
+        <div class="row">
+                <div class="col-sm-2">
+                <label style="color:darkblue" for="pathway">Pathway</label>
+                <p id="pathway" name="pathway">{{.Pathway}}</p>
+            </div>
+            <div class="col-sm-2">
+                <label style="color:darkblue" for="expression">Event</label>
+                <p id="expression" name="expression">{{.Expression}}</p>
+            </div>
+            <div class="col-sm-1">
+                <label style="color:darkblue" for="topic">Task</label>
+                <p id="topic" name="topic">{{.TaskId}}</p>
+            </div>
+            <div class="col-sm-2">
+                <label style="color:darkblue" for="authors">Created By</label>
+                <p id="authors" name="authors">{{.Authors}}</p>
+            </div>
+            <div class="col-sm-1">
+                <label style="color:darkblue" for="nhs">For Patient</label>
+                <p id="nhs" name="nhs">{{.NhsId}}</p>
+            </div>
+            <div class="col-sm-2">
+                <label style="color:darkblue" for="created">Created</label>
+                <p id="created" name="created">{{.Creationtime}}</p>
+            </div>
         </div>
-    </div>
-    {{range .DBEvents.Events}}
-    <div class="row">
-        <div class="col-sm-2">
-            <label style="color:blue" for="subscriber">Notify</label>
-            <p id="subscriber" name="subscriber">
-                {{.User}} {{.Org}}
-            </p>
+        <div class="row">
+            <div class="col-sm-12">
+                <label style="color:darkblue" for="notes">Notes</label>
+                <textarea disabled id="notes" name="notes">{{.Comments}}</textarea>
+            </div>
         </div>
-        <div class="col-sm-2">
-            <label style="color:blue" for="expression">Event</label>
-            <p id="expression" name="expression">{{.Expression}}</p>
-        </div>
-        <div class="col-sm-2">
-            <label style="color:blue" for="topic">Task</label>
-            <p id="topic" name="topic">{{$event.GetMappedId .Topic}}</p>
-        </div>
-        <div class="col-sm-2">
-            <label style="color:blue" for="authors">Created By</label>
-            <p id="authors" name="authors">{{.Authors}}</p>
-        </div>
-        <div class="col-sm-1">
-            <label style="color:blue" for="nhs">For Patient</label>
-            <p id="nhs" name="nhs">{{.NhsId}}</p>
-        </div>
-        <div class="col-sm-2">
-            <label style="color:blue" for="created">Created</label>
-            <p id="created" name="created">{{.CreationTime}}</p>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <label style="color:blue" for="notes">Notes</label>
-            <textarea disabled id="notes" name="notes">{{.Notes}}</textarea>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-2">
-            {{$ackstatus:= hasack .Id}} {{if ne $ackstatus "Acknowledged"}}
-            <a href="{{$url}}?act=events&task=ack&id={{.Id}}&nhs={{.NhsId}}&user={{.User}}&org={{.Org}}&role={{.Role}}&pathway={{.Pathway}}&saml={{.SAML}}"><span><button
-                        class="btn btn-outline-warning btn-sm" type="button"><span class="glyphicon glyphicon-thumbs-up"></span>Acknowledge</button></span></a> {{end}} {{if eq $ackstatus "Acknowledged"}}
-            <a href="#"><span><button
-                                    class="btn btn-outline-primary btn-sm" type="button">ACK'd</button></span></a> {{end}}
-        </div>
-        <div class="col-sm-10">
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <hr></hr>
-        </div>
-    </div>
+        {{template "horizontalline"}}
+        {{end}}
     {{end}}
-    </tbody>
-    {{ template "footer"}} {{end}}
+</div>
+</body>
+{{template "footer"}}
+{{end}}

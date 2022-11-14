@@ -1,7 +1,0 @@
-{{define "snip_workflow_link_events"}}
-<div class="col-sm-2">
-    <a onclick="toggleEvents()" href="{{.EventServices.EventService.EventUrl}}?act=events&task=list&nhs={{.NHSId}}&pathway={{.Pathway}}&saml={{.SAML}}" target="ievents">
-        <i class="fas fa-bullhorn" style="color: rgb(77, 10, 71);"></i> Notifications
-    </a>
-</div>
-{{end}}

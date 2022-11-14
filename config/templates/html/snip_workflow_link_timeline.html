@@ -1,8 +1,0 @@
-{{define "snip_workflow_link_timeline"}}
-<div class="col-sm-2">
-    <a href="{{.EventServices.EventService.EventUrl}}?act=widget&task=timeline&pathway={{.Pathway}}&nhs={{.NHSId}}&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}"
-        target="itimeline" onclick="toggleTimeline()">
-        <i class="fa fa-clock" style="color: rgb(77, 10, 71);"></i> Timeline
-    </a>
-</div>
-{{end}}
