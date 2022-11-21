@@ -28,25 +28,45 @@
                         </a>
                         <div class="timeline-panel">
                             <div class="timeline-heading">
-                                <h5 class="timeline-title" style="color:darkblue">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h5>
+                                {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                    <h6 class="timeline-title" style="color:darkgreen">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h6>
+                                {{else}}
+                                    <h6 class="timeline-title" style="color:darkblue">Task {{$t.TaskData.TaskDetails.ID}} {{$t.TaskData.Description}}</h6>
+                                {{end}}
                             </div>
                             <div class="timeline-body">
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <label style="color:darkblue">Task Duration</label>
-                                        <p>{{$event.TaskDuration $t.TaskData.TaskDetails.ID}}</p>                               
+                                    <div class="col-sm-3">
+                                        <label style="color:darkblue">Type</label>
+                                        <p>{{$t.TaskData.TaskDetails.TaskType}}</p>
                                     </div>
-                                    <div class="col-sm-6">
-                                        <label style="color:darkblue">Current Owner</label>
+                                    <div class="col-sm-5">
+                                        <label style="color:darkblue">Owner</label>
                                         <p>{{$t.TaskData.TaskDetails.ActualOwner}}</p>                            
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label style="color:darkblue">Status</label>
+                                        {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
+                                            <p style="color:darkgreen">{{$t.TaskData.TaskDetails.Status}}</p>
+                                        {{else}}
+                                            <p>{{$t.TaskData.TaskDetails.Status}}</p>
+                                        {{end}}
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label style="color:darkblue">Overdue</label>
+                                        {{if $event.IsTaskOverdue $t.TaskData.TaskDetails.ID}}
+                                            <p style="color:darkorange">Yes</p>
+                                        {{else}}
+                                            <p style="color:darkgreen">No</p>
+                                        {{end}}
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <label style="color:darkblue">Activation Time</label>
+                                    <div class="col-sm-4">
+                                        <label style="color:darkblue">Started</label>
                                         <p>{{$t.TaskData.TaskDetails.ActivationTime}}</p>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-4">
                                         {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
                                             <label style="color:darkblue">Completed On</label>
                                         {{else}}
@@ -54,15 +74,15 @@
                                         {{end}}
                                         <p>{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
                                     </div>
+                                    <div class="col-sm-4">
+                                        <label style="color:darkblue">Complete By</label>
+                                        <p>{{$event.TaskCompleteByTimeString $t.TaskData.TaskDetails.ID}}</p>
+                                    </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <label style="color:darkblue">Status</label>
-                                        <p>{{$t.TaskData.TaskDetails.Status}}</p>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label style="color:darkblue">Task Type</label>
-                                        <p>{{$t.TaskData.TaskDetails.TaskType}}</p>
+                                    <div class="col-sm-4">
+                                        <label style="color:darkblue">Duration</label>
+                                        <p>{{$event.TaskDuration $t.TaskData.TaskDetails.ID}}</p>
                                     </div>
                                 </div>
                             </div>

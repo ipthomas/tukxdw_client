@@ -72,14 +72,6 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="#newxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Start New Workflow</a>
-                    <ul class="collapse list-unstyled" id="newxdwmenu">
-                        {{range .EventServices.WorkflowDefinitions}}
-                        <li><a href="{{$url}}?act=XDW_Creator&task=getworkflow&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}} Workflow</a></li>
-                        {{end}}
-                    </ul>
-                </li>
-                <li>
                     <a href="#configxdsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure XDS Meta</a>
                     <ul class="collapse list-unstyled" id="configxdsmenu">
                         {{range .EventServices.WorkflowXDWMeta}}

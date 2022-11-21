@@ -1,10 +1,10 @@
 {{define "spawidget"}}
 {{$url:= .EventServices.EventService.EventUrl}}
 {{$pwy:= .Pathway}}
-{{$nhsid:=.NHSId}}
-{{$usr:=.EventServices.EventService.User}}
-{{$org:=.EventServices.EventService.Org}}
-{{$role:=.EventServices.EventService.Role}}
+{{$nhsid:= .NHSId}}
+{{$usr:= .EventServices.EventService.User}}
+{{$org:= .EventServices.EventService.Org}}
+{{$role:= .EventServices.EventService.Role}}
 {{$event := .}}
 <!DOCTYPE html>
 <html lang="en">
@@ -34,7 +34,7 @@
                     <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDW Consumer</a>
                     <ul class="collapse list-unstyled" id="pathwaymenu">
                         {{range .EventServices.ActivePathways}}
-                            <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">{{$event.GetMappedId .}}</a></li>
+                            <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&pathway={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">{{$event.GetMappedId .}}</a></li>
                         {{end}}
                     </ul>
                 </li>
@@ -46,8 +46,8 @@
                         {{end}}
                     </ul>
                 </li>
-                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Dashboard</a></li>
-                <li onclick="togglesidebar()"><a href="{{$url}}?act=admin&vers=-1&op=600000&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Admin</a></li>
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Dashboard</a></li>
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=admin&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Admin</a></li>
             </ul>
         </nav>
         <div id="content">
