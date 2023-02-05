@@ -1,0 +1,81 @@
+table tr td {
+    padding: 8px;
+    font-size: 12px;
+    border: 8px;
+}
+
+
+/* critical css */
+
+body {
+    margin: 5px 3% 0 3%;
+    font-size: 14px !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+button[type=submit] {
+    margin-left: 10px;
+}
+
+button[type=button] {
+    margin-top: 10px;
+}
+
+span {
+    margin-right: 10px;
+}
+
+input[type=text],
+select,
+textarea {
+    width: 100%;
+    padding: 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+label {
+    padding: 4px 4px 4px 0;
+    display: inline-block;
+}
+
+input[type=submit] {
+    cursor: pointer;
+    align-content: center;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+input[type=submit]:hover {
+    background-color: #11d80a;
+}
+
+.container {
+    border-radius: 5px;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+
+/* Clear floats after the columns */
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other */
+
+@media screen and (max-width: 600px) {
+    .col-25,
+    .col-75,
+    input[type=submit] {
+        width: 100%;
+        margin-top: 0;
+    }
+}

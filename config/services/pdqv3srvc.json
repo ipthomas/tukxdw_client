@@ -1,19 +1,12 @@
 {
     "id": "pdqv3srvc",
     "desc": "IHE PDQv3 Server",
-    "type": "Client",
-    "proto": "soap",
-    "vers": "1.2",
     "scheme": "http",
     "host": "spirit-test-01.tianispirit.co.uk",
     "port": 8081,
     "url": "SpiritPIX/PDQSupplier",
-    "enabled": true,
-    "paused": false,
-    "debugmode": true,
-    "demomode": false,
-    "dupcheck": false,
     "cachetimeout": 720,
     "cacheenabled": false,
-    "contexttimeout": 10000
+    "contexttimeout": 5000,
+    "debugmode": true
 }

@@ -1,18 +1,12 @@
 {
     "id": "pixmsrvc",
     "desc": "Tiani Spirit IHE PIXm FHIR Service",
-    "type": "Client",
-    "proto": "fhir",
-    "vers": "R4",
     "scheme": "http",
     "host": "spirit-test-01.tianispirit.co.uk",
     "port": 8081,
     "url": "SpiritPIXFhir/r4/Patient",
-    "enabled": true,
-    "paused": false,
     "debugmode": true,
-    "demomode": true,
     "cachetimeout": 720,
     "cacheenabled": false,
-    "contexttimeout": 10000
+    "contexttimeout": 5000
 }

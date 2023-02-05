@@ -957,6 +957,7 @@ type PDQInterface interface {
 
 var (
 	pat_cache = make(map[string][]byte)
+	DebugMode = false
 )
 
 func New_Transaction(i PDQInterface) error {

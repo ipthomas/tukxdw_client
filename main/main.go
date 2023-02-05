@@ -18,9 +18,11 @@ var (
 	pathway = "pathalert"
 	//pathways        = "lac,toc,pathalert,radconsult"
 	nhs                   = "9999999468"
+	initlogging           = false
+	initdb                = false
 	registerEventServices = false
 	registerXdws          = false
-	initTmplts            = true
+	initTmplts            = false
 	contentCreator        = false
 	contentConsumer       = false
 	contentUpdator        = false
@@ -38,6 +40,7 @@ var (
 )
 
 func main() {
+	initVars()
 	initLog()
 	initDB()
 	initTemplates()
@@ -48,6 +51,10 @@ func main() {
 	ContentUpdator()
 	tukdbint.DBConn.Close()
 	LogFile.Close()
+}
+func initVars() {
+	log.Println("Base Folder " + os.Getenv(tukcnst.ENV_TUK_CONFIG))
+	log.Println("Config file " + os.Getenv(tukcnst.ENV_TUK_CONFIG_FILE) + ".json")
 }
 func initServices() {
 	if registerEventServices {
@@ -195,18 +202,22 @@ func loadFile(file fs.DirEntry, folder string) []byte {
 	return fileBytes
 }
 func initLog() {
-	LogFile = tukutil.CreateLog("./logs")
-	log.Println("Loaded log file - " + LogFile.Name())
+	if initlogging {
+		LogFile = tukutil.CreateLog("./logs")
+		log.Println("Loaded log file - " + LogFile.Name())
+	}
 }
 func initDB() {
-	dbconn := tukdbint.TukDBConnection{
-		DBUser:     "root",
-		DBPassword: "rootPass",
-		DBHost:     "localhost",
-		DBPort:     "3306",
-		DBName:     "tuk",
-	}
-	if err := tukdbint.NewDBEvent(&dbconn); err != nil {
-		log.Println(err.Error())
+	if initdb {
+		dbconn := tukdbint.TukDBConnection{
+			DBUser:     "root",
+			DBPassword: "rootPass",
+			DBHost:     "localhost",
+			DBPort:     "3306",
+			DBName:     "tuk",
+		}
+		if err := tukdbint.NewDBEvent(&dbconn); err != nil {
+			log.Println(err.Error())
+		}
 	}
 }

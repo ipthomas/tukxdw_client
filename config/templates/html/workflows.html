@@ -27,7 +27,7 @@
         </div>
          <div class="col-sm-2">
             <label style="color:darkblue" for="created">Opened</label>
-            <p id="created" name="created">{{.Created}}</p>
+            <p id="created" name="created">{{$event.PrettyTime .Created}}</p>
         </div>
         <div class="col-sm-2">
             <label style="color:darkblue" for="xdwkey">XDW Key</label>
@@ -45,12 +45,6 @@
             <label style="color:darkblue" for="version">Version</label>
             <a href="{{$url}}?act=widget&task=xdw&pathway={{.Pathway}}&nhs={{.NHSId}}&vers={{.Version}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="workflowItem"><p id="version" name="version">{{.Version}}</p></a>
         </div>
-        {{if eq .Status "CLOSED"}}
-        <div class="col-sm-2">
-            <label style="color:darkblue" for="duration">Workflow Duration</label>
-            <p id="version" name="version">{{$event.ElapsedTime .}}</p></a>
-        </div>
-        {{end}}
     </div>
     {{template "horizontalline"}}
     {{end}}

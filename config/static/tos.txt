@@ -1,0 +1,6 @@
+Users of the SpiritPDS service assume full responsibility to comply with the requirements as defined by NHS Digital usage terms and conditions for accessing data from the NHS Digital Personal Demographics Service (PDS). The following is an extract for reference. Please refer to NHS Digital for full details.
+
+“The legal basis for organisations accessing PDS data
+NHS Digital can only release data to other organisations, either public or private, where there is a legal basis to do so. This legal basis is determined by the purpose for which the data is required. If the purpose is for the delivery of care to patients by care providers, for example, then there is a clear legal basis.
+For any purpose other than direct care, the legal basis must be established by reference to the Health and Social Care Act 2012.
+The legal basis is primarily concerned with requests for tracing access to the PDS that is for direct care in organisations that already have a service relationship with an individual, and hold identifying information about them that they wish to validate or update. Requests for other purposes, with different legal bases, will require detailed scrutiny.”

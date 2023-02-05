@@ -1,19 +1,10 @@
 {
     "id": "brokersrvc",
-    "desc": "Proxy IHE DSUB Broker",
-    "type": "proxy",
-    "proto": "soap",
-    "vers": "beta",
-    "enabled": true,
-    "paused": false,
-    "debugmode": true,
-    "demomode": true,
+    "desc": "IHE DSUB Broker",
     "scheme": "http",
     "host": "spirit-test-01.tianispirit.co.uk",
     "port": 8081,
     "url": "SpiritXDSDsub/Dsub",
-    "user": "pathways",
-    "org": "ICS",
-    "role": "proxy",
-    "contexttimeout": 3000
+    "contexttimeout": 3000,
+    "debugmode": true
 }

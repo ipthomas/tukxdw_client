@@ -1,11 +1,14 @@
 package tukdbint
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
+	"os"
+	"os/exec"
 	"reflect"
 	"strings"
 	"time"
@@ -17,8 +20,9 @@ import (
 )
 
 var (
-	DB_URL = ""
-	DBConn *sql.DB
+	DB_URL    = ""
+	DBConn    *sql.DB
+	DebugMode = true
 )
 
 type TukDBConnection struct {
@@ -87,6 +91,7 @@ type Event struct {
 	User               string `json:"user"`
 	Org                string `json:"org"`
 	Role               string `json:"role"`
+	Speciality         string `json:"speciality"`
 	Topic              string `json:"topic"`
 	Pathway            string `json:"pathway"`
 	Comments           string `json:"comments"`
@@ -174,6 +179,51 @@ func (e EventsList) Swap(i, j int) {
 	e[i], e[j] = e[j], e[i]
 }
 
+func (i *TukDBConnection) InitialiseDatabase(mysqlFile string) error {
+	if DBConn != nil {
+		DBConn.Close()
+	}
+	var err error
+	i.setDBCredentials()
+	dsn := fmt.Sprintf("%s:%s@tcp(%s)/",
+		i.DBUser,
+		i.DBPassword,
+		i.DBHost+i.DBPort)
+	log.Printf("Opening DB Connection to mysql instance via DSN - %s", dsn)
+	DBConn, err = sql.Open(tukcnst.MYSQL, dsn)
+	if err != nil {
+		log.Printf("Error %s when Opening DB Connection\n", err)
+		return err
+	}
+	ctx, cancelfunc := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancelfunc()
+	_, err = DBConn.ExecContext(ctx, "CREATE DATABASE IF NOT EXISTS "+i.DBName)
+	DBConn.Close()
+	if err != nil {
+		log.Printf("Error %s when Opening DB Connection\n", err)
+		return err
+	}
+	return i.InitialiseDBTables(mysqlFile)
+}
+func (i *TukDBConnection) InitialiseDBTables(mysqlFile string) error {
+	cmd := exec.Command("/usr/local/bin/mysql", "-h"+i.DBHost, "-P"+strings.TrimPrefix(i.DBPort, ":"),
+		"-u"+i.DBUser, "-p"+i.DBPassword, "-D"+i.DBName)
+	dump, dump_err := os.Open(mysqlFile)
+	if dump_err != nil {
+		return dump_err
+	}
+	cmd.Stdin = dump
+	var out, stderr bytes.Buffer
+	cmd.Stdout = &out
+	cmd.Stderr = &stderr
+	err := cmd.Run()
+	if err != nil {
+		log.Printf("Error executing query. Command Output: %+v\n: %+v, %v", out.String(), stderr.String(), err)
+		return err
+	}
+	return nil
+}
+
 type TUK_DB_Interface interface {
 	newEvent() error
 }
@@ -189,41 +239,12 @@ func NewDBEvent(i TUK_DB_Interface) error {
 func (i *TukDBConnection) newEvent() error {
 	var err error
 	if i.DB_URL != "" {
-		log.Println("Database API URL provided. Will connect to mysql instance via AWS API Gateway url " + i.DB_URL)
+		log.Printf("Database API URL provided. Will connect to mysql instance via AWS API Gateway url %s", i.DB_URL)
 		DB_URL = i.DB_URL
 	} else {
-		if i.DBUser == "" {
-			i.DBUser = "root"
-		}
-		if i.DBPassword == "" {
-			i.DBPassword = "rootPass"
-		}
-		if i.DBHost == "" {
-			i.DBHost = "localhost"
-		}
-		if i.DBPort == "" {
-			i.DBPort = ":3306"
-		} else {
-			if !strings.HasPrefix(i.DBPort, ":") {
-				i.DBPort = ":" + i.DBPort
-			}
-		}
+		i.setDBCredentials()
 		if i.DBName == "" {
 			i.DBName = "tuk"
-		}
-		if i.DBTimeout == "" {
-			i.DBTimeout = "60s"
-		} else {
-			if !strings.HasSuffix(i.DBTimeout, "s") {
-				i.DBTimeout = i.DBTimeout + "s"
-			}
-		}
-		if i.DBReadTimeout == "" {
-			i.DBReadTimeout = "2s"
-		} else {
-			if !strings.HasSuffix(i.DBReadTimeout, "s") {
-				i.DBReadTimeout = i.DBReadTimeout + "s"
-			}
 		}
 		dsn := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true&timeout=%s&readTimeout=%s",
 			i.DBUser,
@@ -232,11 +253,40 @@ func (i *TukDBConnection) newEvent() error {
 			i.DBName,
 			i.DBTimeout,
 			i.DBReadTimeout)
-		log.Println("No Database API URL provided. Opening DB Connection to mysql instance via DSN - " + dsn)
+		log.Printf("No Database API URL provided. Opening DB Connection to mysql instance via DSN - %s", dsn)
 		DBConn, err = sql.Open(tukcnst.MYSQL, dsn)
 	}
 
 	return err
+}
+
+func (i *TukDBConnection) setDBCredentials() {
+	if i.DBUser == "" {
+		i.DBUser = "root"
+	}
+	if i.DBPassword == "" {
+		i.DBPassword = "rootPass"
+	}
+	if i.DBHost == "" {
+		i.DBHost = "localhost"
+	}
+	if !strings.HasPrefix(i.DBPort, ":") {
+		i.DBPort = ":" + i.DBPort
+	}
+	if i.DBTimeout == "" {
+		i.DBTimeout = "5s"
+	} else {
+		if !strings.HasSuffix(i.DBTimeout, "s") {
+			i.DBTimeout = i.DBTimeout + "s"
+		}
+	}
+	if i.DBReadTimeout == "" {
+		i.DBReadTimeout = "2s"
+	} else {
+		if !strings.HasSuffix(i.DBReadTimeout, "s") {
+			i.DBReadTimeout = i.DBReadTimeout + "s"
+		}
+	}
 }
 func GetSubscriptions(brokerref string, pathway string, expression string) Subscriptions {
 	subs := Subscriptions{Action: tukcnst.SELECT}
@@ -333,7 +383,7 @@ func (i *Events) newEvent() error {
 
 		for rows.Next() {
 			ev := Event{}
-			if err := rows.Scan(&ev.Id, &ev.Creationtime, &ev.DocName, &ev.ClassCode, &ev.ConfCode, &ev.FormatCode, &ev.FacilityCode, &ev.PracticeCode, &ev.Expression, &ev.Authors, &ev.XdsPid, &ev.XdsDocEntryUid, &ev.RepositoryUniqueId, &ev.NhsId, &ev.User, &ev.Org, &ev.Role, &ev.Topic, &ev.Pathway, &ev.Comments, &ev.Version, &ev.TaskId); err != nil {
+			if err := rows.Scan(&ev.Id, &ev.Creationtime, &ev.DocName, &ev.ClassCode, &ev.ConfCode, &ev.FormatCode, &ev.FacilityCode, &ev.PracticeCode, &ev.Speciality, &ev.Expression, &ev.Authors, &ev.XdsPid, &ev.XdsDocEntryUid, &ev.RepositoryUniqueId, &ev.NhsId, &ev.User, &ev.Org, &ev.Role, &ev.Topic, &ev.Pathway, &ev.Comments, &ev.Version, &ev.TaskId); err != nil {
 				switch {
 				case err == sql.ErrNoRows:
 					return nil
@@ -362,16 +412,16 @@ func GetPathwayWorkflows(pathway string) Workflows {
 	wfs.newEvent()
 	return wfs
 }
-func GetActiveWorkflowNames() []string {
-	var activewfs []string
-	wfs := GetWorkflows("", "", "", "", 0, false, "")
-	log.Printf("Active Workflow Count %v", wfs.Count)
+func GetActiveWorkflowNames() map[string]string {
+	var activewfs = make(map[string]string)
+	wfs := GetWorkflows("", "", "", "", -1, false, tukcnst.TUK_STATUS_OPEN)
+	log.Printf("Open Workflow Count %v", wfs.Count)
 	for _, v := range wfs.Workflows {
 		if v.Id != 0 {
-			activewfs = append(activewfs, v.Pathway)
+			activewfs[v.Pathway] = ""
 		}
 	}
-	log.Printf("Set %v Active Pathways - %s", len(activewfs), activewfs)
+	log.Printf("Set %v Active Pathway Names - %s", len(activewfs), activewfs)
 	return activewfs
 }
 func GetWorkflows(pathway string, nhsid string, xdwkey string, xdwuid string, version int, published bool, status string) Workflows {
@@ -429,20 +479,20 @@ func (i *Workflows) newEvent() error {
 	}
 	return err
 }
-func GetWorkflowDefinitionNames() []string {
-	var xdwdefs []string
+func GetWorkflowDefinitionNames() map[string]string {
+	names := make(map[string]string)
 	xdws := XDWS{Action: tukcnst.SELECT}
 	xdw := XDW{IsXDSMeta: false}
 	xdws.XDW = append(xdws.XDW, xdw)
 	if err := xdws.newEvent(); err == nil {
 		for _, xdw := range xdws.XDW {
 			if xdw.Id > 0 {
-				xdwdefs = append(xdwdefs, xdw.Name)
+				names[xdw.Name] = ""
 			}
 		}
 	}
-	log.Printf("Returning %v XDW Config files", len(xdwdefs))
-	return xdwdefs
+	log.Printf("Returning %v XDW Config files", len(names))
+	return names
 }
 func GetWorkflowXDSMetaNames() []string {
 	var xdwdefs []string
@@ -765,15 +815,6 @@ func (i *ServiceStates) newEvent() error {
 	}
 	return err
 }
-func HasEventAck(eventid int64) bool {
-	evacks := EventAcks{Action: tukcnst.SELECT}
-	evack := EventAck{EventID: eventid}
-	evacks.EventAck = append(evacks.EventAck, evack)
-	if err := evacks.newEvent(); err != nil {
-		log.Println(err.Error())
-	}
-	return evacks.Cnt > 0
-}
 func GetTaskNotes(pwy string, nhsid string, taskid int, ver int) string {
 	notes := ""
 	evs := Events{Action: tukcnst.SELECT}
@@ -789,54 +830,6 @@ func GetTaskNotes(pwy string, nhsid string, taskid int, ver int) string {
 		log.Printf("Found TaskId %v Notes %s", taskid, notes)
 	}
 	return notes
-}
-func (i *EventAcks) newEvent() error {
-	if DB_URL != "" {
-		return i.newAWSEvent()
-	}
-	var err error
-	var stmntStr = tukcnst.SQL_DEFAULT_EVENT_ACKS
-	var rows *sql.Rows
-	var vals []interface{}
-	ctx, cancelCtx := context.WithTimeout(context.Background(), 2*time.Second)
-	defer cancelCtx()
-	if len(i.EventAck) > 0 {
-		if stmntStr, vals, err = createPreparedStmnt(i.Action, tukcnst.EVENT_ACKS, reflectStruct(reflect.ValueOf(i.EventAck[0]))); err != nil {
-			log.Println(err.Error())
-			return err
-		}
-	}
-	sqlStmnt, err := DBConn.PrepareContext(ctx, stmntStr)
-	if err != nil {
-		log.Println(err.Error())
-		return err
-	}
-	defer sqlStmnt.Close()
-
-	if i.Action == tukcnst.SELECT {
-		rows, err = setRows(ctx, sqlStmnt, vals)
-		if err != nil {
-			log.Println(err.Error())
-			return err
-		}
-		for rows.Next() {
-			eventack := EventAck{}
-			if err := rows.Scan(&eventack.Id, &eventack.CreationTime, &eventack.EventID, &eventack.User, &eventack.Org, &eventack.Role); err != nil {
-				switch {
-				case err == sql.ErrNoRows:
-					return nil
-				default:
-					log.Println(err.Error())
-					return err
-				}
-			}
-			i.EventAck = append(i.EventAck, eventack)
-			i.Cnt = i.Cnt + 1
-		}
-	} else {
-		i.LastInsertId, err = setLastID(ctx, sqlStmnt, vals)
-	}
-	return err
 }
 func reflectStruct(i reflect.Value) map[string]interface{} {
 	params := make(map[string]interface{})
@@ -992,14 +985,6 @@ func (i *XDWS) newAWSEvent() error {
 func (i *IdMaps) newAWSEvent() error {
 	body, _ := json.Marshal(i)
 	awsreq := aws_APIRequest(i.Action, tukcnst.ID_MAPS, body)
-	if err := tukhttp.NewRequest(&awsreq); err != nil {
-		return err
-	}
-	return json.Unmarshal(awsreq.Response, &i)
-}
-func (i *EventAcks) newAWSEvent() error {
-	body, _ := json.Marshal(i)
-	awsreq := aws_APIRequest(i.Action, tukcnst.EVENT_ACKS, body)
 	if err := tukhttp.NewRequest(&awsreq); err != nil {
 		return err
 	}

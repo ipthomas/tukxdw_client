@@ -1,11 +1,7 @@
 {
     "id": "eventsrvc",
     "desc": "TUK Event Server",
-    "type": "server",
-    "proto": "rest",
-    "vers": "beta",
     "enabled": true,
-    "paused": false,
     "debugmode": true,
     "scheme": "https",
     "host": "TSUK",

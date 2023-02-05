@@ -13,6 +13,8 @@ import (
 	"github.com/ipthomas/tukutil"
 )
 
+var DebugMode = true
+
 type CGLRequest struct {
 	Request    string
 	X_Api_Key  string
@@ -80,24 +82,24 @@ func (i *ClientRequest) newRequest() error {
 	req := i.HttpRequest
 	req.ParseForm()
 	i.Act = req.FormValue(tukcnst.ACT)
-	i.User = req.FormValue("user")
-	i.Org = req.FormValue("org")
-	i.Orgoid = tukutil.GetCodeSystemVal(req.FormValue("org"))
-	i.Role = req.FormValue("role")
-	i.NHS = req.FormValue("nhs")
-	i.PID = req.FormValue("pid")
-	i.PIDOrg = req.FormValue("pidorg")
-	i.PIDOID = tukutil.GetCodeSystemVal(req.FormValue("pidorg"))
-	i.FamilyName = req.FormValue("familyname")
-	i.GivenName = req.FormValue("givenname")
-	i.DOB = req.FormValue("dob")
-	i.Gender = req.FormValue("gender")
-	i.ZIP = req.FormValue("zip")
-	i.Status = req.FormValue("status")
-	i.ID = tukutil.GetIntFromString(req.FormValue("id"))
-	i.Task = req.FormValue(tukcnst.TASK)
-	i.Pathway = req.FormValue(tukcnst.PATHWAY)
-	i.Version = tukutil.GetIntFromString(req.FormValue("version"))
+	i.User = req.FormValue(tukcnst.QUERY_PARAM_USER)
+	i.Org = req.FormValue(tukcnst.QUERY_PARAM_ORG)
+	i.Orgoid = tukutil.GetCodeSystemVal(req.FormValue(tukcnst.QUERY_PARAM_ORG))
+	i.Role = req.FormValue(tukcnst.QUERY_PARAM_ROLE)
+	i.NHS = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_NHS)
+	i.PID = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_PID)
+	i.PIDOrg = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_PID_ORG)
+	i.PIDOID = tukutil.GetCodeSystemVal(req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_PID_ORG))
+	i.FamilyName = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_FAMILY_NAME)
+	i.GivenName = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_GIVEN_NAME)
+	i.DOB = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_DOB)
+	i.Gender = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_GENDER)
+	i.ZIP = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_ZIP)
+	i.Status = req.FormValue(tukcnst.TUK_EVENT_QUERY_PARAM_STATUS)
+	i.ID = tukutil.GetIntFromString(req.FormValue(tukcnst.QUERY_PARAM_ID))
+	i.Task = req.FormValue(tukcnst.QUERY_PARAM_TASK)
+	i.Pathway = req.FormValue(tukcnst.QUERY_PARAM_PATHWAY)
+	i.Version = tukutil.GetIntFromString(req.FormValue(tukcnst.QUERY_PARAM_VERSION))
 	i.XDWKey = req.FormValue("xdwkey")
 	i.ReturnFormat = req.Header.Get(tukcnst.ACCEPT)
 	if len(i.XDWKey) > 12 {
@@ -192,7 +194,6 @@ func (i *AWS_APIRequest) newRequest() error {
 		defer cancel()
 		i.logRequest(req.Header)
 		if resp, err = client.Do(req.WithContext(ctx)); err == nil {
-			log.Printf("Response Status Code %v\n", resp.StatusCode)
 			if resp.StatusCode == http.StatusOK {
 				i.Response, err = io.ReadAll(resp.Body)
 			}
@@ -204,7 +205,7 @@ func (i *AWS_APIRequest) newRequest() error {
 	return err
 }
 func (i *AWS_APIRequest) logRequest(headers http.Header) {
-	log.Println("HTTP POST Request Headers")
+	log.Printf("HTTP POST Request Headers")
 	tukutil.Log(headers)
 	log.Printf("HTTP Request\nURL = %s\nTimeout = %v\nMessage body\n%s", i.URL, i.Timeout, string(i.Body))
 }
@@ -225,7 +226,7 @@ func (i *PIXmRequest) logRequest(headers http.Header) {
 	log.Printf("HTTP Request\nURL = %s\nTimeout = %v", i.URL, i.Timeout)
 }
 func (i *CGLRequest) logRequest(headers http.Header) {
-	log.Println("HTTP GET Request Headers")
+	log.Printf("HTTP GET Request Headers")
 	tukutil.Log(headers)
 	log.Printf("HTTP Request\nURL = %s - Timeout = %v", i.Request, 5)
 }

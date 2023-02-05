@@ -27,56 +27,67 @@
         <nav id="sidebar">
             <ul class="list-unstyled components">
                 <li>
-                    <a href="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{.NHSId}}&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" style="text-align:center"
-                        target="iadmin" onclick="togglesidebar()">Pathways Dashboard</a>
+                    <a href="{{$url}}?act=widget&task=dashboard&op=600000&pathway={{.Pathway}}&nhs={{.NHSId}}&vers=-1&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="iadmin" onclick="togglesidebar()">Pathways Dashboard</a>
                 </li>
                 <hr></hr>
                 <li>
-                    <a href="{{$url}}?act=subscriber&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" style="text-align:center" target="iadmin" onclick="togglesidebar()">Manage Subscriptions</a>
+                    <a href="{{$url}}?act=subscriber&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" target="iadmin" onclick="togglesidebar()">Manage Subscriptions</a>
                 </li>
                 <hr></hr>
                 <li>
-                    <a href="{{$url}}?act=admin&task=restart&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" style="text-align:center" onclick="togglesidebar()">Re-Initialise Event Service</a>
+                    <a href="{{$url}}?act=admin&task=restart&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" onclick="togglesidebar()">Restart Service</a>
                 </li>
                 <hr></hr>
                 <li>
-                    <a href="#configsrvcsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Services</a>
-                    <ul class="collapse list-unstyled" id="configsrvcsmenu">
-                        {{range .EventServices.ServiceConfigs}}
-                        <li><a href="{{$url}}?act=services&task=get&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
-                        {{end}}
+                    <a href="#updatesmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Update</a>
+                    <ul class="collapse list-unstyled" id="updatesmenu">
+                        <li>
+                            <a href="{{$url}}?act=admin&task=initsrvcs&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" onclick="togglesidebar()">Service Configs</a>
+                        </li>
+                        <li>
+                            <a href="{{$url}}?act=admin&task=inittmplts&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" onclick="togglesidebar()">Templates</a>
+                        </li>
+                        <li>
+                            <a href="{{$url}}?act=admin&task=initxdws&user={{.EventServices.EventService.User}}&org={{.EventServices.EventService.Org}}&role={{.EventServices.EventService.Role}}&saml={{.SAML}}" onclick="togglesidebar()">XDW Configs</a>
+                        </li>
                     </ul>
                 </li>
+                <hr></hr>
                 <li>
-                    <a href="#configxmlmsgmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Messages</a>
-                    <ul class="collapse list-unstyled" id="configxmlmsgmenu">
-                        {{range .EventServices.XMLMessages}}
-                        <li><a href="{{$url}}?act=services&task=getxml&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
-                        {{end}}
-                    </ul>
-                </li>
-                <li>
-                    <a href="#configwidgetmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure HTML</a>
-                    <ul class="collapse list-unstyled" id="configwidgetmenu">
-                        {{range .EventServices.HTMLWidgets}}
-                        <li><a href="{{$url}}?act=services&task=gethtml&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
-                        {{end}}
-                    </ul>
-                </li>
-                <li>
-                    <a href="#configxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure Pathways</a>
-                    <ul class="collapse list-unstyled" id="configxdwmenu">
-                        {{range .EventServices.WorkflowDefinitions}}
-                        <li><a href="{{$url}}?act=services&task=getxdw&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
-                        {{end}}
-                    </ul>
-                </li>
-                <li>
-                    <a href="#configxdsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure XDS Meta</a>
-                    <ul class="collapse list-unstyled" id="configxdsmenu">
-                        {{range .EventServices.WorkflowXDWMeta}}
-                        <li><a href="{{$url}}?act=services&task=getmeta&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
-                        {{end}}
+                    <a href="#configsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Configure</a>
+                    <ul class="collapse list-unstyled" id="configsmenu">
+                        <li>
+                            <a href="#configsrvcsmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Services</a>
+                            <ul class="collapse list-unstyled" id="configsrvcsmenu">
+                                {{range .EventServices.ServiceConfigs}}
+                                <li><a href="{{$url}}?act=services&task=get&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#configwidgetmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">HTML</a>
+                            <ul class="collapse list-unstyled" id="configwidgetmenu">
+                                {{range .EventServices.HTMLWidgets}}
+                                <li><a href="{{$url}}?act=services&task=gethtml&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#configxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Pathways</a>
+                            <ul class="collapse list-unstyled" id="configxdwmenu">
+                                {{range .EventServices.WorkflowDefinitions}}
+                                <li><a href="{{$url}}?act=services&task=getxdw&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#initsrvcs" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDS Meta</a>
+                            <ul class="collapse list-unstyled" id="initsrvcs">
+                                {{range .EventServices.WorkflowXDWMeta}}
+                                <li><a href="{{$url}}?act=services&task=getmeta&op={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}&saml={{$saml}}" target="iadmin" onclick="togglesidebar()">{{.}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             </ul>

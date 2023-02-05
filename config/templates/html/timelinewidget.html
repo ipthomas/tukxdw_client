@@ -52,19 +52,11 @@
                                             <p>{{$t.TaskData.TaskDetails.Status}}</p>
                                         {{end}}
                                     </div>
-                                    <div class="col-sm-2">
-                                        <label style="color:darkblue">Overdue</label>
-                                        {{if $event.IsTaskOverdue $t.TaskData.TaskDetails.ID}}
-                                            <p style="color:darkorange">Yes</p>
-                                        {{else}}
-                                            <p style="color:darkgreen">No</p>
-                                        {{end}}
-                                    </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-sm-4">
                                         <label style="color:darkblue">Started</label>
-                                        <p>{{$t.TaskData.TaskDetails.ActivationTime}}</p>
+                                        <p>{{$event.PrettyTime $t.TaskData.TaskDetails.ActivationTime}}</p>
                                     </div>
                                     <div class="col-sm-4">
                                         {{if eq $t.TaskData.TaskDetails.Status "COMPLETE"}}
@@ -72,7 +64,11 @@
                                         {{else}}
                                             <label style="color:darkblue">Updated</label>
                                         {{end}}
-                                        <p>{{$t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                                        {{if $event.IsTaskOverdue $t.TaskData.TaskDetails.ID}}
+                                            <p style="color:darkorange">{{$event.PrettyTime $t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                                        {{else}}
+                                            <p>{{$event.PrettyTime $t.TaskData.TaskDetails.LastModifiedTime}}</p>
+                                        {{end}}
                                     </div>
                                     <div class="col-sm-4">
                                         <label style="color:darkblue">Complete By</label>
@@ -80,9 +76,17 @@
                                     </div>
                                 </div>
                                 <div class="row">
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-8">
                                         <label style="color:darkblue">Duration</label>
                                         <p>{{$event.TaskDuration $t.TaskData.TaskDetails.ID}}</p>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label style="color:darkblue">Overdue</label>
+                                        {{if $event.IsTaskOverdue $t.TaskData.TaskDetails.ID}}
+                                        <p style="color:darkorange">Yes</p>
+                                        {{else}}
+                                        <p style="color:darkgreen">No</p>
+                                        {{end}}
                                     </div>
                                 </div>
                             </div>

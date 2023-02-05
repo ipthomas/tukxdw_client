@@ -1,0 +1,12 @@
+{
+    "id": "envvars",
+    "dbuser": "root",
+    "dbpwd": "rootPass",
+    "dbhost": "localhost",
+    "dbport": "3306",
+    "dbname": "tuk",
+    "broker": "http://spirit-test-01.tianispirit.co.uk:8081/SpiritXDSDsub/Dsub",
+    "consumer": "https://spirit-test-01.tianispirit.co.uk:8381/eventservice/event",
+    "logenabled": "true",
+    "regoid": "2.16.840.1.113883.2.1.3.31.2.1.1"
+}

@@ -28,6 +28,7 @@ var (
 	SeedRoot   = "1.2.40.0.13.1.1.3542466645."
 	IdSeed     = getIdIncrementSeed(5)
 	CodeSystem = make(map[string]string)
+	DebugMode  = true
 )
 
 func init() {
@@ -61,7 +62,7 @@ func ReturnDecoded(s string) string {
 
 	str, err := base64.StdEncoding.DecodeString(s)
 	if err != nil {
-		log.Println("Error Decoding Base64 String : " + err.Error())
+		log.Printf("Error Decoding Base64 String : %s", err.Error())
 		return ""
 	}
 	return string(str)
@@ -163,8 +164,10 @@ func MonitorApp() {
 
 // Log takes any struc as input and logs out the struc as a json string
 func Log(i interface{}) {
-	b, _ := json.MarshalIndent(i, "", "  ")
-	log.Println(string(b))
+	if DebugMode {
+		b, _ := json.MarshalIndent(i, "", "  ")
+		log.Println(string(b))
+	}
 }
 
 func OHT_ShouldEscalate(startdate time.Time, htDate string) bool {
@@ -379,12 +382,14 @@ func PrettyAuthorPerson(author string) string {
 	if strings.Contains(author, "^") {
 		authorsplit := strings.Split(author, "^")
 		if len(authorsplit) > 2 {
+			log.Println("Split Author " + authorsplit[1] + " " + authorsplit[2])
 			return authorsplit[1] + " " + authorsplit[2]
 		}
 		if len(authorsplit) > 1 {
 			return authorsplit[1]
 		}
 	}
+	log.Println("Parsed Author " + author)
 	return author
 }
 
@@ -395,13 +400,13 @@ func GetFolderFiles(folder string) ([]fs.DirEntry, error) {
 	var fileInfo []fs.DirEntry
 	f, err = os.Open(folder)
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return fileInfo, err
 	}
 	fileInfo, err = f.ReadDir(-1)
 	f.Close()
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 	}
 	return fileInfo, err
 }
@@ -554,8 +559,7 @@ func DT_SQL() string {
 	return DT_Year() + "-" + DT_Month() + "-" + DT_Day() + "T" + DT_Hour() + ":" + DT_Min() + ":" + DT_Sec()
 }
 func DT_SQL_Future_Year() string {
-	t := time.Now().Local().Add(time.Hour * time.Duration(8760))
-	t.AddDate(1, 0, 0)
+	t := time.Now().Local().AddDate(1, 0, 0)
 	return GetStringFromInt(t.Local().Year()) + "-" + GetStringFromInt(int(t.Local().Month())) + "-" + GetStringFromInt(t.Local().Day()) + "T" + GetStringFromInt(t.Local().Hour()) + ":" + GetStringFromInt(t.Local().Minute()) + ":" + GetStringFromInt(t.Local().Second())
 }
 func DT_Zulu() string {
@@ -566,8 +570,7 @@ func DT_Zulu_Future(future int64) string {
 	return GetStringFromInt(t.Local().Year()) + "-" + GetStringFromInt(int(t.Local().Month())) + "-" + GetStringFromInt(t.Local().Day()) + "T" + GetStringFromInt(t.Local().Hour()) + ":" + GetStringFromInt(t.Local().Minute()) + ":" + GetStringFromInt(t.Local().Second()) + "." + GetStringFromInt(GetMilliseconds()) + "Z"
 }
 func DT_Zulu_Future_Year() string {
-	t := time.Now().Local().Add(time.Hour * time.Duration(8760))
-	t.AddDate(1, 0, 0)
+	t := time.Now().Local().AddDate(1, 0, 0)
 	return GetStringFromInt(t.Local().Year()) + "-" + GetStringFromInt(int(t.Local().Month())) + "-" + GetStringFromInt(t.Local().Day()) + "T" + GetStringFromInt(t.Local().Hour()) + ":" + GetStringFromInt(t.Local().Minute()) + ":" + GetStringFromInt(t.Local().Second()) + "." + GetStringFromInt(GetMilliseconds()) + "Z"
 }
 func DT_Kitchen() string {
@@ -637,7 +640,7 @@ func GetXdwConfigFiles(basepath string) (map[string][]byte, error) {
 	var fileInfo []fs.DirEntry
 	f, err = os.Open(basepath + "xdwconfig/")
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return xdwFiles, err
 	}
 	fileInfo, err = f.ReadDir(-1)
@@ -663,7 +666,7 @@ func GetHTMLWidgetFiles(basepath string) ([]string, error) {
 	var fileInfo []fs.DirEntry
 	f, err = os.Open(basepath + "templates/html/")
 	if err != nil {
-		log.Println(err)
+		log.Println(err.Error())
 		return htmlWidgets, err
 	}
 	if fileInfo, err = f.ReadDir(-1); err != nil {
@@ -698,7 +701,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	file, handler, err := r.FormFile("myFile")
 	if err != nil {
 		fmt.Fprintf(w, "<h3 style='color:red'>Failed to Upload File : "+err.Error()+" : </h3>")
-		log.Println(err)
+		log.Println(err.Error())
 		return
 	}
 	defer file.Close()
@@ -723,14 +726,14 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 	uploadFile, err := os.OpenFile(fn, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		fmt.Fprintf(w, "<h3 style='color:red'>Failed to create File on Server : "+err.Error()+" : </h3>")
-		log.Println(err)
+		log.Println(err.Error())
 		return
 	}
 	defer uploadFile.Close()
 	fileBytes, err := io.ReadAll(file)
 	if err != nil {
 		fmt.Fprintf(w, "<h3 style='color:red'>Failed to read file from client : "+err.Error()+" : </h3>")
-		log.Println(err)
+		log.Println(err.Error())
 		return
 	}
 	uploadFile.Write(fileBytes)
@@ -740,7 +743,6 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 }
 func WriteResponseHeaders(fn http.HandlerFunc, secure bool) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		w.Header().Set("Server", "Tiani_Spirit_UK")
 		if r.Header.Get(tukcnst.ACCEPT) == tukcnst.APPLICATION_XML {
 			w.Header().Set(tukcnst.CONTENT_TYPE, tukcnst.APPLICATION_XML)
@@ -771,7 +773,6 @@ func Newid() string {
 	IdSeed = IdSeed + 1
 	return id
 }
-
 func GetServiceUrl(port int, scheme, host, url string) string {
 	return scheme + "://" + host + ":" + strconv.Itoa(port) + "/" + url
 }
@@ -801,7 +802,6 @@ func GetXMLNodeVal(message string, node string) string {
 	log.Println("Message does not contain Node : " + node)
 	return ""
 }
-
 func ArrayContains(strs []string, str string) (int, bool) {
 	if len(strs) > 0 {
 		for s := range strs {
@@ -823,7 +823,6 @@ func GetFileBytes(f string) ([]byte, error) {
 }
 func GetXmlReturnNode(message string) string {
 	log.Println("Searching for <return> node in response message")
-
 	if strings.Contains(message, "<return>") {
 		var start = strings.Index(message, "<return>")
 		var end = strings.Index(message, "</return>") + 9
