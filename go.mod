@@ -6,7 +6,7 @@ require (
 	github.com/ipthomas/tukcnst v1.3.3
 	github.com/ipthomas/tukdbint v1.3.14
 	github.com/ipthomas/tukutil v1.3.6
-	github.com/ipthomas/tukxdw v1.3.8
+	github.com/ipthomas/tukxdw v1.3.9
 )
 
 require (
