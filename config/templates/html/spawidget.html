@@ -30,24 +30,32 @@
     <div class="wrapper">
         <nav id="sidebar">
             <ul class="list-unstyled components">
+                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">Workflows Dashboard</a></li>
                 <li>
-                    <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDW Consumer</a>
+                    <a href="#patientmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Patient {{.NHSId}}</a>
+                    <ul class="collapse list-unstyled" id="patientmenu">
+                        <li onclick="togglesidebar()"><a href="{{$url}}?act=patient&task=query&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">Demographics</a></li>
+                        <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=xdws&nhs={{.NHSId}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">Active Workflows</a></li>
+                        <li>
+                            <a href="#newxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">New Workflow</a>
+                            <ul class="collapse list-unstyled" id="newxdwmenu">
+                                {{range .EventServices.WorkflowDefinitions}}
+                                <li><a href="{{$url}}?act=XDW_Creator&task=getworkflow&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}"
+                                        target="spacontent" onclick="togglesidebar()">{{$event.GetMappedId .}}</a></li>
+                                {{end}}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#pathwaymenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Active Workflows</a>
                     <ul class="collapse list-unstyled" id="pathwaymenu">
                         {{range .EventServices.ActivePathways}}
                             <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&pathway={{.}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">{{$event.GetMappedId .}}</a></li>
                         {{end}}
                     </ul>
                 </li>
-                 <li>
-                    <a href="#newxdwmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">XDW Creator</a>
-                    <ul class="collapse list-unstyled" id="newxdwmenu">
-                        {{range .EventServices.WorkflowDefinitions}}
-                            <li><a href="{{$url}}?act=XDW_Creator&task=getworkflow&pathway={{.}}&nhs={{$nhsid}}&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent" onclick="togglesidebar()">{{.}} Workflow</a></li>
-                        {{end}}
-                    </ul>
-                </li>
-                <li onclick="togglesidebar()"><a href="{{$url}}?act=widget&task=dashboard&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Dashboard</a></li>
-                <li onclick="togglesidebar()"><a href="{{$url}}?act=admin&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">XDW Admin</a></li>
+                 <li onclick="togglesidebar()"><a href="{{$url}}?act=admin&vers=-1&op=600000&user={{$usr}}&org={{$org}}&role={{$role}}" target="spacontent">Workflow Admin</a></li>
             </ul>
         </nav>
         <div id="content">

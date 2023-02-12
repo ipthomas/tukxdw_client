@@ -1,0 +1,95 @@
+2023/02/12 19:00:53.076702 tukutil.go:141: -----------------------------------------------------------------------------------
+2023/02/12 19:00:53.076732 main.go:228: Loaded log file - ./logs/2023/0212.log
+2023/02/12 19:00:53.076754 tukdbint.go:267: No Database API URL provided. Opening DB Connection to mysql instance via DSN - root:rootPass@tcp(tuk.coil1nnpqdlr.eu-west-1.rds.amazonaws.com:3306)/tuk?parseTime=true&timeout=5s&readTimeout=2s
+2023/02/12 19:00:53.076896 main.go:62: Processing Event Service Config Files
+2023/02/12 19:00:53.077155 main.go:221: Loaded eventsrvc.json 
+2023/02/12 19:00:53.077421 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [eventsrvc]
+2023/02/12 19:00:53.282818 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (name, service) VALUES (?, ?) - Values [eventsrvc {
+    "id": "eventsrvc",
+    "desc": "TUK Event Server",
+    "enabled": false,
+    "debugmode": true,
+    "scheme": "http",
+    "host": "fwa7l2kp71.execute-api.eu-west-1.amazonaws.com",
+    "port": 80,
+    "demomode": true,
+    "baseurlpath": "eventservice",
+    "eventurl": "event",
+     "filespath": "/tmp",
+    "secret": "",
+    "token": "",
+    "certpath": "certs",
+    "certs": "cert.pem",
+    "keys": "server.key",
+    "xdsdomain": "2.16.840.1.113883.2.1.3.31.2.1.1",
+    "brokersrvc": "brokersrvc",
+    "pdqv3srvc": "pdqv3srvc",
+    "pixmsrvc": "pixmsrvc",
+    "xdsregsrvc": "xdsregsrvc",
+    "xdsrepsrvc": "xdsrepsrvc",
+    "cachetimeout": 0,
+    "cacheenabled": false,
+    "patientsrvc": "pixm",
+    "contexttimeout": 0
+}
+]
+2023/02/12 19:00:53.353652 main.go:221: Loaded xdsregsrvc.json 
+2023/02/12 19:00:53.353701 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [xdsregsrvc]
+2023/02/12 19:00:53.424278 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (service, name) VALUES (?, ?) - Values [{
+    "id": "xdsregsrvc",
+    "desc": "Tiani Spirit IHE XDS Registry Service",
+    "scheme": "http",
+    "host": "spirit-test-01.tianispirit.co.uk",
+    "port": 8081,
+    "url": "SpiritXDSRegistry/Reg1",
+    "debugmode": true,
+    "contexttimeout": 10000
+} xdsregsrvc]
+2023/02/12 19:00:53.489966 main.go:221: Loaded brokersrvc.json 
+2023/02/12 19:00:53.490013 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [brokersrvc]
+2023/02/12 19:00:53.556968 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (name, service) VALUES (?, ?) - Values [brokersrvc {
+    "id": "brokersrvc",
+    "desc": "IHE DSUB Broker",
+    "scheme": "http",
+    "host": "spirit-test-01.tianispirit.co.uk",
+    "port": 8081,
+    "url": "SpiritXDSDsub/Dsub",
+    "contexttimeout": 3000,
+    "debugmode": true
+}]
+2023/02/12 19:00:53.624221 main.go:221: Loaded pixmsrvc.json 
+2023/02/12 19:00:53.624435 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [pixmsrvc]
+2023/02/12 19:00:53.689861 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (name, service) VALUES (?, ?) - Values [pixmsrvc {
+    "id": "pixmsrvc",
+    "desc": "Tiani Spirit IHE PIXm FHIR Service",
+    "scheme": "http",
+    "host": "spirit-test-01.tianispirit.co.uk",
+    "port": 8081,
+    "url": "SpiritPIXFhir/r4/Patient",
+    "debugmode": true,
+    "contexttimeout": 5000
+}]
+2023/02/12 19:00:53.760013 main.go:221: Loaded xdsrepsrvc.json 
+2023/02/12 19:00:53.760089 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [xdsrepsrvc]
+2023/02/12 19:00:53.827471 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (name, service) VALUES (?, ?) - Values [xdsrepsrvc {
+    "id": "xdsrepsrvc",
+    "desc": "Tiani Spirit WS API XDS Repository Service",
+    "scheme": "http",
+    "host": "spirit-test-01.tianispirit.co.uk",
+    "port": 8181,
+    "url": "SpiritEhrWsRemoting/EhrWSRemoting",
+    "debugmode": true,
+    "contexttimeout": 5000
+}]
+2023/02/12 19:00:53.896655 main.go:221: Loaded pdqv3srvc.json 
+2023/02/12 19:00:53.896747 tukdbint.go:974: Created Prepared Statement DELETE FROM servicestates WHERE name= ? - Values [pdqv3srvc]
+2023/02/12 19:00:53.964900 tukdbint.go:974: Created Prepared Statement INSERT INTO servicestates (name, service) VALUES (?, ?) - Values [pdqv3srvc {
+    "id": "pdqv3srvc",
+    "desc": "IHE PDQv3 Server",
+    "scheme": "http",
+    "host": "spirit-test-01.tianispirit.co.uk",
+    "port": 8081,
+    "url": "SpiritPIX/PDQSupplier",
+    "contexttimeout": 5000,
+    "debugmode": true
+}]

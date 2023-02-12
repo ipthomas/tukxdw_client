@@ -6,7 +6,5 @@
     "port": 8081,
     "url": "SpiritPIXFhir/r4/Patient",
     "debugmode": true,
-    "cachetimeout": 720,
-    "cacheenabled": false,
     "contexttimeout": 5000
 }

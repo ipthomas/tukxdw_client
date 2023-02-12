@@ -5,8 +5,6 @@
     "host": "spirit-test-01.tianispirit.co.uk",
     "port": 8081,
     "url": "SpiritPIX/PDQSupplier",
-    "cachetimeout": 720,
-    "cacheenabled": false,
     "contexttimeout": 5000,
     "debugmode": true
 }

@@ -15,28 +15,28 @@ import (
 )
 
 var (
-	pathway = "pathalert"
-	//pathways        = "lac,toc,pathalert,radconsult"
+	pathway               = "pathalert"
 	nhs                   = "9999999468"
-	initlogging           = false
-	initdb                = false
-	registerEventServices = false
+	initlogging           = true
+	initdb                = true
+	registerEventServices = true
 	registerXdws          = false
 	initTmplts            = false
+	initStatic            = false
 	contentCreator        = false
 	contentConsumer       = false
 	contentUpdator        = false
 	//TUK_DB_URL_AWS          = "https://5k2o64mwt5.execute-api.eu-west-1.amazonaws.com/beta/"
-	DSUB_BROKER_URL = "http://spirit-test-01.tianispirit.co.uk:8081/SpiritXDSDsub/Dsub"
-	//DSUB_CONSUMER_URL_AWS   = "https://cjrvrddgdh.execute-api.eu-west-1.amazonaws.com/beta/"
-	DSUB_CONSUMER_URL_Local = "http://tukeventserver.ddns.net:8081/eventservice/event"
-	user                    = "pbradley"
-	role                    = "Clinical"
-	org                     = "lth"
-	notes                   = "User " + user + " from " + org + " in the role of " + role + " created new " + pathway + " Workflow"
-	_, b, _, _              = runtime.Caller(0)
-	Basepath                = filepath.Dir(b)
-	LogFile                 *os.File
+	DSUB_BROKER_URL       = "http://spirit-test-01.tianispirit.co.uk:8081/SpiritXDSDsub/Dsub"
+	DSUB_CONSUMER_URL_AWS = "https://fwa7l2kp71.execute-api.eu-west-1.amazonaws.com/beta/eventservice/event"
+	//DSUB_CONSUMER_URL_Local = "http://tukeventserver.ddns.net:8081/eventservice/event"
+	user       = "pbradley"
+	role       = "Clinical"
+	org        = "lth"
+	notes      = "User " + user + " from " + org + " in the role of " + role + " created new " + pathway + " Workflow"
+	_, b, _, _ = runtime.Caller(0)
+	Basepath   = filepath.Dir(b)
+	LogFile    *os.File
 )
 
 func main() {
@@ -45,7 +45,8 @@ func main() {
 	initDB()
 	initTemplates()
 	initServices()
-	XDWAdmin()
+	initStaticFiles()
+	RegisterXDWs()
 	ContentCreator()
 	ContentConsumer()
 	ContentUpdator()
@@ -114,7 +115,7 @@ func ContentCreator() {
 		}
 	}
 }
-func XDWAdmin() {
+func RegisterXDWs() {
 	if registerXdws {
 		log.Println("Processing XDW Config Files")
 		if xdwconfigs, err := tukutil.GetFolderFiles("./config/xdwconfig/"); err == nil {
@@ -137,7 +138,7 @@ func XDWAdmin() {
 							Actor:            tukcnst.XDW_ADMIN_REGISTER_DEFINITION,
 							Pathway:          pathway,
 							DSUB_BrokerURL:   DSUB_BROKER_URL,
-							DSUB_ConsumerURL: DSUB_CONSUMER_URL_Local,
+							DSUB_ConsumerURL: DSUB_CONSUMER_URL_AWS,
 							Request:          filebytes,
 						}
 						if suffix == "_meta.json" {
@@ -145,6 +146,26 @@ func XDWAdmin() {
 						}
 						tukxdw.Execute(&trans)
 					}
+				}
+			}
+		}
+	}
+}
+func initStaticFiles() {
+	if initStatic {
+		if staticfiles, err := tukutil.GetFolderFiles("./config/static/"); err == nil {
+			for _, file := range staticfiles {
+				filebytes := loadFile(file, "./config/static/")
+				if filebytes != nil {
+					log.Printf("Persisting static file %s", file.Name())
+					statics := tukdbint.Statics{Action: tukcnst.DELETE}
+					static := tukdbint.Static{Name: file.Name()}
+					statics.Static = append(statics.Static, static)
+					tukdbint.NewDBEvent(&statics)
+					statics = tukdbint.Statics{Action: tukcnst.INSERT}
+					static = tukdbint.Static{Name: file.Name(), Content: filebytes}
+					statics.Static = append(statics.Static, static)
+					tukdbint.NewDBEvent(&statics)
 				}
 			}
 		}
@@ -212,7 +233,7 @@ func initDB() {
 		dbconn := tukdbint.TukDBConnection{
 			DBUser:     "root",
 			DBPassword: "rootPass",
-			DBHost:     "localhost",
+			DBHost:     "tuk.coil1nnpqdlr.eu-west-1.rds.amazonaws.com",
 			DBPort:     "3306",
 			DBName:     "tuk",
 		}

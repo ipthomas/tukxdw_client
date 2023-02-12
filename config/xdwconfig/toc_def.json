@@ -1,0 +1,142 @@
+{
+    "ref": "toc",
+    "name": "Transfer of Care",
+    "confidentialitycode": "N",
+    "startbytime": "",
+    "completebytime": "day(5)",
+    "expirationtime": "",
+    "completionBehavior": [
+      {
+        "completion": {
+          "condition": "task(4)"
+        }
+      }
+    ],
+    "tasks": [
+      {
+        "id": "1",
+        "tasktype": "NOTIFICATION",
+        "name": "TOC_Request",
+        "description": "Transfer of Care Requirement Identified",
+        "actualowner": "",
+        "expirationtime": "day(1)",
+        "startbytime": "",
+        "completebytime": "hour(1)",
+        "isskipable": false,
+        "potentialOwners": null,
+        "completionBehavior": [
+          {
+            "completion": {
+              "condition": "output(TOC_Request)"
+            }
+          }
+        ],
+        "output": [
+          {
+            "name": "TOC_Request",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "tasktype": "NOTIFICATION",
+        "name": "TOC_Claimed",
+        "description": "Transfer Of Care Request Claimed",
+        "actualowner": "",
+        "expirationtime": "day(2)",
+        "startbytime": "",
+        "completebytime": "day(1)",
+        "isskipable": false,
+        "potentialOwners": null,
+        "completionBehavior": [
+          {
+            "completion": {
+              "condition": "output(TOC_Claimed)"
+            }
+          }
+        ],
+        "input": [
+          {
+            "name": "TOC_Request",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ],
+        "output": [
+          {
+            "name": "TOC_Claimed",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ]
+      },
+      {
+        "id": "3",
+        "tasktype": "NOTIFICATION",
+        "name": "TOC_Schedule",
+        "description": "Patient Transfer Scheduled",
+        "actualowner": "",
+        "expirationtime": "day(3)",
+        "startbytime": "",
+        "completebytime": "day(2)",
+        "isskipable": false,
+        "potentialOwners": null,
+        "completionBehavior": [
+          {
+            "completion": {
+              "condition": "output(TOC_Schedule)"
+            }
+          }
+        ],
+        "input": [
+          {
+            "name": "TOC_Claimed",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ],
+        "output": [
+          {
+            "name": "TOC_Schedule",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ]
+      },
+      {
+        "id": "4",
+        "tasktype": "NOTIFICATION",
+        "name": "Patient_Admitted",
+        "description": "Patient Admitted by New Provider",
+        "actualowner": "",
+        "expirationtime": "day(6)",
+        "startbytime": "",
+        "completebytime": "day(5)",
+        "isskipable": false,
+        "potentialOwners": null,
+        "completionBehavior": [
+          {
+            "completion": {
+              "condition": "output(Patient_Admitted)"
+            }
+          }
+        ],
+        "input": [
+          {
+            "name": "TOC_Schedule",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ],
+        "output": [
+          {
+            "name": "Patient_Admitted",
+            "contenttype": "text/plain",
+            "accesstype": "url"
+          }
+        ]
+      }
+    ]
+  }
